@@ -346,8 +346,6 @@ jobs:
       skip_diego_unsupported_tests: true
       skip_regex: lucid64
       skip_ssl_validation: true
-
-
 - name: acceptance-tests-internetless
   lifecycle: errand
   instances: 1
@@ -372,8 +370,6 @@ jobs:
       skip_diego_unsupported_tests: true
       skip_regex: lucid64
       skip_ssl_validation: true
-
-
 - name: smoke_tests
   lifecycle: errand
   instances: 1
@@ -393,8 +389,6 @@ jobs:
       space: SMOKE_TEST_SPACE
       user: admin
       enable_windows_tests: false
-
-
 
 properties:
   networks: {apps: cf_private}
