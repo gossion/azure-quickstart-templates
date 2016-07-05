@@ -141,7 +141,7 @@
       "boshAzureCPIReleaseUrl": "[uri(variables('baseUriAzureChinaCloud'), 'releases/bosh-azure-cpi-release-12.tgz')]",
       "boshAzureCPIReleaseSha1": "180e44f14812f7dd365c9a13928ca97a192f5d74",
       "stemcellUrl": "[uri(variables('baseUriAzureChinaCloud'), 'stemcells/bosh-stemcell-3232.11-azure-hyperv-ubuntu-trusty-go_agent.tgz')]",
-      "stemcellSha1": "d71b1092f0edc68544f0e1796e75491d0d3678ce",
+      "stemcellSha1": "575a284a3e314a5e1dc78fed8ff73e8a1da9b78b",
       "boshInitUrl": "[uri(variables('baseUriAzureChinaCloud'), 'bosh-init/bosh-init-0.0.81-linux-amd64')]",
       "cfReleaseUrl": "[uri(variables('baseUriAzureChinaCloud'), 'releases/cf-release-238.tgz')]"
     },
