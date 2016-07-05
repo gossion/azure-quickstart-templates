@@ -120,7 +120,6 @@ jobs:
               script: /var/vcap/jobs/dea_next/bin/dns_health_check
               interval: 5m
               status: passing
-- name: doppler_z1
     etcd_metrics_server:
       nats:
         machines: [REPLACE_WITH_CLOUD_FOUNDRY_INTERNAL_IP]
