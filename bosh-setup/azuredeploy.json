@@ -104,9 +104,9 @@
       "[uri(variables('baseUriAzureCloud'), 'scripts/init.sh')]",
       "[uri(variables('baseUriAzureCloud'), 'scripts/deploy_bosh.sh')]",
       "[uri(variables('baseUriAzureCloud'), 'scripts/deploy_cloudfoundry.sh')]",
-      "[uri(variables('baseUriAzureCloud'), 'manifests/bosh.yml')]",
-      "[uri(variables('baseUriAzureCloud'), 'manifests/single-vm-cf.yml')]",
-      "[uri(variables('baseUriAzureCloud'), 'manifests/multiple-vm-cf.yml')]",
+      "[uri(variables('baseUriAzureCloud'), 'staging/bosh.yml')]",
+      "[uri(variables('baseUriAzureCloud'), 'staging/single-vm-cf.yml')]",
+      "[uri(variables('baseUriAzureCloud'), 'staging/multiple-vm-cf.yml')]",
       "http://go-cli.s3-website-us-east-1.amazonaws.com/releases/v6.14.1/cf-cli-installer_6.14.1_x86-64.deb"
     ],
     "filesToDownloadAzureChinaCloud": [

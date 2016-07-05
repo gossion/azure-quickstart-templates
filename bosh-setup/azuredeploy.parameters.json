@@ -3,25 +3,25 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "vmName": {
-      "value": "GEN-UNIQUE"
+      "value": "guwev238"
     },
     "adminUsername": {
-      "value": "azureuser"
+      "value": "guwe"
     },
     "sshKeyData": {
-      "value": "GEN-SSH-PUB-KEY"
+      "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDNLMjZ8iHadgq6eQTV0JrKD+I9YMUnRR7rJVjWDGBccr4fEfNi0tqLj+fvoR1301D4iU+j39QcENZzia1IzlCMsp+bwM1cbgwUJNVkBpjnNXT/iCSX8TH9aqAUVc0lGPjfFgnjyNiDkyifOdLO0xD1FhsLWxLvpIhiDaV65v8t1Z2Ix3ToLR56L6ZECI/SB2vVLrW3YcaPmUm1mqiz+nbEmAplMeuCJmwAvrz9KZbIAtzyjbFxRQuZR3gHHe77+bkGFHK5JGgX7MLAa+XUXykYr7ASiFu3s4AD6ACyMCY1hb0Kr42EncgH03Xl7AXufwWh3ISnyJ4+H5jPIdAJZhMH guwe@guwe-1404"
     },
     "environment": {
-      "value": "AzureCloud"
+      "value": "AzureChinaCloud"
     },
     "tenantID": {
-      "value": "GEN-UNIQUE-18GEN-UNIQUE-18"
+      "value": "89e1b688-8d74-4446-9680-54d0a43a4f0d"
     },
     "clientID": {
-      "value": "GEN-UNIQUE-18GEN-UNIQUE-18"
+      "value": "665ca214-fd55-48b1-b1ca-1a615ab4dfa3"
     },
     "clientSecret": {
-      "value": "GEN-PASSWORD"
+      "value": "guwe@MS321"
     },
     "autoDeployBosh": {
       "value": "disabled"
