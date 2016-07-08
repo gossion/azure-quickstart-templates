@@ -133,7 +133,11 @@
       "stemcellUrl": "https://bosh.io/d/stemcells/bosh-azure-hyperv-ubuntu-trusty-go_agent?v=3232.11",
       "stemcellSha1": "575a284a3e314a5e1dc78fed8ff73e8a1da9b78b",
       "boshInitUrl": "https://s3.amazonaws.com/bosh-init-artifacts/bosh-init-0.0.81-linux-amd64",
-      "cfReleaseUrl": "https://bosh.io/d/github.com/cloudfoundry/cf-release?v=238"
+      "cfReleaseUrl": "https://bosh.io/d/github.com/cloudfoundry/cf-release?v=238",
+      "diegoReleaseUrl": "https://bosh.io/d/github.com/cloudfoundry-incubator/diego-release?v=0.1476.0",
+      "etcdReleaseUrl": "https://bosh.io/d/github.com/cloudfoundry-incubator/etcd-release?v=57",
+      "gardenReleaseUrl": "https://bosh.io/d/github.com/cloudfoundry-incubator/garden-linux-release?v=0.338.0",
+      "cflinuxfs2ReleaseUrl": "https://bosh.io/d/github.com/cloudfoundry/cflinuxfs2-rootfs-release?v=1.16.0"
     },
     "environmentAzureChinaCloud": {
       "serviceHostBase": "core.chinacloudapi.cn",
@@ -489,6 +493,10 @@
           "STEMCELL_URL": "[variables('environment').stemcellUrl]",
           "STEMCELL_SHA1": "[variables('environment').stemcellSha1]",
           "CF_RELEASE_URL": "[variables('environment').cfReleaseUrl]",
+          "DIEGO_RELEASE_URL": "[variables('environment').diegoReleaseUrl]",
+          "ETCD_RELEASE_URL": "[variables('environment').etcdReleaseUrl]",
+          "GARDEN_RELEASE_URL": "[variables('environment').gardenReleaseUrl]",
+          "CFLINUXFS2_RELEASE_URL": "[variables('environment').cflinuxfs2ReleaseUrl]",
           "BOSH_INIT_URL": "[variables('environment').boshInitUrl]",
           "KEEP_UNREACHABLE_VMS": "[variables('keepUnreachableVMs')]",
           "AUTO_DEPLOY_BOSH": "[parameters('autoDeployBosh')]"
