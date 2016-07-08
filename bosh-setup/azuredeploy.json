@@ -149,7 +149,11 @@
       "stemcellUrl": "[uri(variables('baseUriAzureChinaCloud'), 'stemcells/bosh-stemcell-3232.11-azure-hyperv-ubuntu-trusty-go_agent.tgz')]",
       "stemcellSha1": "575a284a3e314a5e1dc78fed8ff73e8a1da9b78b",
       "boshInitUrl": "[uri(variables('baseUriAzureChinaCloud'), 'bosh-init/bosh-init-0.0.81-linux-amd64')]",
-      "cfReleaseUrl": "[uri(variables('baseUriAzureChinaCloud'), 'releases/cf-release-238.tgz')]"
+      "cfReleaseUrl": "[uri(variables('baseUriAzureChinaCloud'), 'releases/cf-release-238.tgz')]",
+      "diegoReleaseUrl": "[uri(variables('baseUriAzureChinaCloud'), 'releases/diego-release-0.1476.0.tgz')]",
+      "etcdReleaseUrl": "[uri(variables('baseUriAzureChinaCloud'), 'releases/etcd-release-57.tgz')]",
+      "gardenReleaseUrl": "[uri(variables('baseUriAzureChinaCloud'), 'releases/garden-linux-release-0.338.0.tgz')]",
+      "cflinuxfs2ReleaseUrl": "[uri(variables('baseUriAzureChinaCloud'), 'releases/cflinuxfs2-rootfs-release-1.16.0.tgz')]"
     },
     "environment": "[variables(concat('environment', parameters('environment')))]",
 

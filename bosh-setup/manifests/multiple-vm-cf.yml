@@ -284,14 +284,10 @@ jobs:
 - name: database_z1
   instances: 1
   templates:
-  - name: consul_agent
-    release: cf
-  - name: etcd
-    release: etcd
-  - name: bbs
-    release: diego
-  - name: metron_agent
-    release: cf
+  - {name: consul_agent, release: cf}
+  - {name: etcd, release: etcd}
+  - {name: bbs, release: diego}
+  - {name: metron_agent, release: cf}
   persistent_disk: 20480
   resource_pool: resource_z1
   networks:
@@ -309,14 +305,10 @@ jobs:
 - name: brain_z1
   instances: 1
   templates:
-  - name: consul_agent
-    release: cf
-  - name: auctioneer
-    release: diego
-  - name: converger
-    release: diego
-  - name: metron_agent
-    release: cf
+  - {name: consul_agent, release: cf}
+  - {name: auctioneer, release: diego}
+  - {name: converger, release: diego}
+  - {name: metron_agent, release: cf}
   resource_pool: resource_z1
   networks:
     - name: cf_private
@@ -329,16 +321,11 @@ jobs:
 - name: cell_z1
   instances: 2
   templates:
-  - name: consul_agent
-    release: cf
-  - name: rep
-    release: diego
-  - name: garden
-    release: garden-linux
-  - name: cflinuxfs2-rootfs-setup
-    release: cflinuxfs2-rootfs
-  - name: metron_agent
-    release: cf
+  - {name: consul_agent, release: cf}
+  - {name: rep, release: diego}
+  - {name: garden, release: garden-linux}
+  - {name: cflinuxfs2-rootfs-setup, release: cflinuxfs2-rootfs}
+  - {name: metron_agent, release: cf}
   resource_pool: resource_z1
   networks:
     - name: cf_private
@@ -354,18 +341,12 @@ jobs:
 - name: cc_bridge_z1
   instances: 1
   templates:
-  - name: consul_agent
-    release: cf
-  - name: stager
-    release: cf
-  - name: nsync
-    release: cf
-  - name: tps
-    release: cf
-  - name: cc_uploader
-    release: cf
-  - name: metron_agent
-    release: cf
+  - {name: consul_agent, release: cf}
+  - {name: stager, release: cf}
+  - {name: nsync, release: cf}
+  - {name: tps, release: cf}
+  - {name: cc_uploader, release: cf}
+  - {name: metron_agent, release: cf}
   resource_pool: resource_z1
   networks:
     - name: cf_private
@@ -378,14 +359,10 @@ jobs:
 - name: access_z1
   instances: 1
   templates:
-  - name: consul_agent
-    release: cf
-  - name: ssh_proxy
-    release: diego
-  - name: metron_agent
-    release: cf
-  - name: file_server
-    release: diego
+  - {name: consul_agent, release: cf}
+  - {name: ssh_proxy, release: diego}
+  - {name: file_server, release: diego}
+  - {name: metron_agent, release: cf}
   resource_pool: resource_z1
   networks:
     - name: cf_private
@@ -398,12 +375,9 @@ jobs:
 - name: route_emitter_z1
   instances: 1
   templates:
-  - name: consul_agent
-    release: cf
-  - name: route_emitter
-    release: diego
-  - name: metron_agent
-    release: cf
+  - {name: consul_agent, release: cf}
+  - {name: route_emitter, release: diego}
+  - {name: metron_agent, release: cf}
   resource_pool: resource_z1
   networks:
     - name: cf_private

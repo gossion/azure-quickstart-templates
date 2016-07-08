@@ -17,7 +17,11 @@ We look forward to hearing your feedback and suggestions!
 
 ```
 Template Changelog
-# v1.7.0 (2016-07-06)
+# v1.8.1 (2016-07-10)
+
+- Enable diego by default
+
+# v1.8.0 (2016-07-06)
 
 - Upgrade cf-release to v238
 - Upgrade bosh stemcell to version 3232.11
