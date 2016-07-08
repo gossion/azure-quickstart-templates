@@ -1114,4 +1114,4 @@ properties:
       uaa_secret: c1oudc0w
       uaa_token_url: https://uaa.REPLACE_WITH_SYSTEM_DOMAIN/oauth/token
   hm9000:
-    port: null
+    port: 5525
