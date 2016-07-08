@@ -94,7 +94,7 @@
     "ubuntuOSVersion": "14.04.3-LTS",
     "sshKeyPath": "[concat('/home/',parameters('adminUsername'),'/.ssh/authorized_keys')]",
 
-    "baseUriAzureCloud": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/bosh-setup/",
+    "baseUriAzureCloud": "https://raw.githubusercontent.com/gossion/azure-quickstart-templates/cf-diego/bosh-setup/",
     "baseUriAzureChinaCloud": "https://cloudfoundry.blob.core.chinacloudapi.cn/",
 
     "filesToDownloadAzureCloud": [
