@@ -94,6 +94,9 @@ jobs:
   - {name: gorouter, release: cf}
   - {name: statsd-injector, release: cf}
   - {name: syslog_drain_binder, release: cf}
+  #issue: https://github.com/cloudfoundry/diego-release/issues/174
+  #won't be able to use two etcd jobs, deployment will fail
+  #workaround is create another node for diego etcd
   - {name: etcd, release: etcd}
   - {name: bbs, release: diego}
   - {name: auctioneer, release: diego}
@@ -149,7 +152,9 @@ jobs:
     doppler: {zone: z1}
     doppler_endpoint:
       shared_secret: c1oudc0w
-    traffic_controller: {zone: z1}
+    traffic_controller:
+      zone: z1
+      outgoing_port: 8083
     login:
       catalina_opts: -Xmx768m -XX:MaxPermSize=256m
       port: 8082
@@ -187,7 +192,7 @@ jobs:
         uris:
         - "doppler.REPLACE_WITH_SYSTEM_DOMAIN"
       - name: loggregator
-        port: 8080
+        port: 8083
         registration_interval: 20s
         uris:
           - "loggregator.REPLACE_WITH_SYSTEM_DOMAIN"
@@ -621,7 +626,7 @@ properties:
   system_domain_organization: default_organization
   request_timeout_in_seconds: 900
   router:
-    port: 8888
+    port: 8999
     cipher_suites: null
     debug_addr: 0.0.0.0:17002
     enable_ssl: null
@@ -822,6 +827,7 @@ properties:
       server_cert: ""
       server_key: ""
     converger:
+      debug_addr: "0.0.0.0:17003"
       bbs:
         ca_cert: ""
         client_cert: ""
@@ -848,6 +854,7 @@ properties:
     ssl:
       skip_cert_verify: true
     ssh_proxy:
+      listen_addr: "0.0.0.0:2223"
       bbs:
         ca_cert: ""
         client_cert: ""
