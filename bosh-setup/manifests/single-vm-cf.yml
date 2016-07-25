@@ -28,13 +28,21 @@ networks:
   type: vip
 
 resource_pools:
+- name: resource_postgres_z1
+  network: cf_private
+  stemcell:
+    name: bosh-azure-hyperv-ubuntu-trusty-go_agent
+    version: latest
+  cloud_properties:
+    instance_type: Standard_A0
+    security_group: REPLACE_WITH_NSG_NAME_FOR_CLOUD_FOUNDRY
 - name: resource_z1
   network: cf_private
   stemcell:
     name: bosh-azure-hyperv-ubuntu-trusty-go_agent
     version: latest
   cloud_properties:
-    instance_type: Standard_D1
+    instance_type: Standard_D2
     security_group: REPLACE_WITH_NSG_NAME_FOR_CLOUD_FOUNDRY
 
 compilation:
@@ -58,7 +66,7 @@ jobs:
 - name: postgres_z1
   instances: 1
   persistent_disk: 1024
-  resource_pool: resource_z1
+  resource_pool: resource_postgres_z1
   templates:
   - {name: postgres, release: cf}
   - {name: metron_agent, release: cf}
