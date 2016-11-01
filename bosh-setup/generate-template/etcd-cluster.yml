@@ -1,0 +1,22 @@
+properties:
+  <<: (( merge ))
+  etcd:
+    <<: (( merge ))
+    cluster:
+    - instances: 1
+      name: etcd_z1
+    - instances: 0
+      name: etcd_z2
+    - instances: 1
+      name: database_z1
+    - instances: 0
+      name: database_z2
+    - instances: 0
+      name: database_z3
+    - instances: 0
+      name: colocated_z1
+    - instances: 0
+      name: colocated_z2
+    - instances: 0
+      name: colocated_z2
+

@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# This is only a simple guide to generate template
+
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+
+# Install spiff
+
+WORK_DIR=$(mktemp -d /tmp/upgrade-manifest.XXXXX)
+mkdir -p $WORKD_DIR
+cd $WORK_DIR
+
+# get repos
+# SHOULD use offical repo
+git clone git@github.com:gossion/diego-release.git -b guwe
+git clone git@github.com:gossion/cf-release.git -b guwe
+
+# generate cf template
+CF_TEMPLATE="$WORK_DIR/azure-cf.yml"
+$WORK_DIR/cf-release/scripts/generate_deployment_manifest \
+  azure \
+  $WORK_DIR/cf-release/spec/fixtures/azure/cf-stub.yml \
+  $SCRIPT_DIR/etcd-certs-stub.yml \
+  $SCRIPT_DIR/disable-dea-stub.yml \
+  > $CF_TEMPLATE
+
+# generate diego template
+DIEGO_TEMPLATE="$WORK_DIR/azure-diego.yml"
+$WORK_DIR/diego-release/scripts/generate-deployment-manifest \
+  -c $CF_TEMPLATE \
+  -i $WORK_DIR/diego-release/manifest-generation/examples/azure/diego/iaas-settings.yml \
+  -p $WORK_DIR/diego-release/manifest-generation/examples/azure/diego/property-overrides.yml \
+  -n $WORK_DIR/diego-release/manifest-generation/examples/azure/diego/instance-count-overrides.yml \
+  > $DIEGO_TEMPLATE
+
+# merge cf and diego templates
+CF_TEMP_TEMPLATE=$(mktemp)
+cat $CF_TEMPLATE | sed -e 's/^resource_pools:/resource_pools:\n- <<: (( merge ))/g' | \
+                   sed -e 's/^jobs:/jobs:\n- <<: (( merge ))/g' | \
+                   sed -e 's/^properties:/properties:\n  <<: (( merge ))/g' | \
+                   sed -e 's/^releases:/releases:\n- <<: (( merge ))/g' \
+  > $CF_TEMP_TEMPLATE
+
+CF_DIEGO_TEMPLATE=$(mktemp)
+spiff merge $CF_TEMP_TEMPLATE $DIEGO_TEMPLATE > $CF_DIEGO_TEMPLATE
+
+# workaround for etcd cluster
+CF_DIEGO_ETCD_TEMPLATE=$(mktemp)
+spiff merge $WORK_DIR/cf-release/templates/generic-manifest-mask.yml \
+            $SCRIPT_DIR/etcd-cluster.yml \
+            $CF_DIEGO_TEMPLATE \
+            > $CF_DIEGO_ETCD_TEMPLATE
+
+#enable ssh-proxy
+MULTIPLE_VM_TEMPLATE="$WORK_DIR/multiple-vm-cf.yml"
+spiff merge $WORK_DIR/cf-release/templates/generic-manifest-mask.yml \
+            $WORK_DIR/diego-release/manifest-generation/examples/azure/cf/enable-ssh.yml \
+            $CF_DIEGO_ETCD_TEMPLATE \
+            > $MULTIPLE_VM_TEMPLATE
+
+echo "multiple vm template is generated at: $MULTIPLE_VM_TEMPLATE"
