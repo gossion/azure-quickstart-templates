@@ -1,0 +1,4 @@
+etcd-properties-from-diego: (( properties.etcd ))
+
+properties:
+  etcd: (( merge ))

@@ -1,0 +1,36 @@
+
+jobs:
+- <<: (( merge ))
+- name: etcd_z1
+  <<: (( merge ))
+  properties:
+    <<: (( merge ))
+    etcd: (( etcd-properties-from-cf ))
+- name: etcd_z2
+  <<: (( merge ))
+  properties:
+    <<: (( merge ))
+    etcd: (( etcd-properties-from-cf ))
+- name: database_z1
+  <<: (( merge ))
+  properties:
+    <<: (( merge ))
+    etcd: (( etcd-properties-from-diego ))
+- name: database_z2
+  <<: (( merge ))
+  properties:
+    <<: (( merge ))
+    etcd: (( etcd-properties-from-diego ))
+- name: database_z3
+  <<: (( merge ))
+  properties:
+    <<: (( merge ))
+    etcd: (( etcd-properties-from-diego ))
+
+properties:
+  <<: (( merge ))
+  etcd: {}
+
+
+etcd-properties-from-cf: (( merge ))
+etcd-properties-from-diego: (( merge ))
