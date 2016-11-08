@@ -19,7 +19,7 @@ networks:
     - range: 10.0.16.0/24
       gateway: 10.0.16.1
       dns:
-      - 168.63.129.16
+      - REPLACE_WITH_DNS
       reserved:
       - 10.0.16.2 - 10.0.16.3
       static:
@@ -147,4 +147,8 @@ jobs:
     properties:
       ha_proxy:
         ssl_pem: REPLACE_WITH_HA_PROXY_SSL_PEM
+  - name: acceptance_tests
+    instances: 1
+  - name: smoke_tests
+    instances: 1
 # code_snippet cf-stub-azure end
