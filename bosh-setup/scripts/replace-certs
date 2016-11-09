@@ -1,0 +1,234 @@
+#!/bin/bash
+
+set -ex
+
+# Install spiff
+
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+WORK_DIR=$(mktemp -d /tmp/upgrade-manifest.XXXXX)
+BOSH_TEMPLATE="${SCRIPT_DIR}/bosh.yml"
+SINGLE_TEMPLATE="${SCRIPT_DIR}/single-vm-cf.yml"
+MULTIPLE_TEMPLATE="${SCRIPT_DIR}/multiple-vm-cf.yml"
+
+indent() {
+  sed -e 's/^/  /'
+}
+
+indent_contents_of() {
+  indent < "$1"
+}
+
+contents_of() {
+ cat $1
+}
+
+replace_variable() {
+  sed -i "s/$2/*$3/g" $1
+}
+
+replace_value() {
+  sed -i "s/$2/$3/g" $1
+}
+
+cert_variable() {
+  cat <<-EOF
+$1: &$1 |
+$(indent_contents_of "$2")
+EOF
+}
+
+variable() {
+  cat <<-EOF
+$1: &$1 $(contents_of "$2")
+EOF
+}
+
+variables() {
+  cat <<-EOF
+# variables start
+$(cert_variable blobstore_ca_cert     certs/blobstore-certs/server-ca.crt)
+$(cert_variable blobstore_tls_cert certs/blobstore-certs/server.crt)
+$(cert_variable blobstore_private_key  certs/blobstore-certs/server.key)
+
+$(cert_variable consul_ca_cert     certs/consul-certs/server-ca.crt)
+$(cert_variable consul_agent_cert  certs/consul-certs/agent.crt)
+$(cert_variable consul_agent_key   certs/consul-certs/agent.key)
+$(cert_variable consul_server_cert certs/consul-certs/server.crt)
+$(cert_variable consul_server_key  certs/consul-certs/server.key)
+
+$(cert_variable jwt_verification_key certs/uaa-certs/jwt_verification_key)
+$(cert_variable jwt_signing_key      certs/uaa-certs/jwt_signing_key)
+
+$(cert_variable hm9000_ca_cert     certs/hm9000-certs/hm9000_ca.crt)
+$(cert_variable hm9000_client_cert certs/hm9000-certs/hm9000_client.crt)
+$(cert_variable hm9000_client_key  certs/hm9000-certs/hm9000_client.key)
+$(cert_variable hm9000_server_cert certs/hm9000-certs/hm9000_server.crt)
+$(cert_variable hm9000_server_key  certs/hm9000-certs/hm9000_server.key)
+
+$(cert_variable ha_proxy_ssl_pem certs/ha-proxy-ssl-pem)
+
+$(cert_variable diego_ca certs/diego-certs/diego-ca.crt)
+
+$(cert_variable bbs_client_cert certs/diego-certs/bbs-certs/client.crt)
+$(cert_variable bbs_client_key  certs/diego-certs/bbs-certs/client.key)
+$(cert_variable bbs_server_cert certs/diego-certs/bbs-certs/server.crt)
+$(cert_variable bbs_server_key  certs/diego-certs/bbs-certs/server.key)
+
+$(cert_variable rep_client_cert certs/diego-certs/rep-certs/client.crt)
+$(cert_variable rep_client_key  certs/diego-certs/rep-certs/client.key)
+$(cert_variable rep_server_cert certs/diego-certs/rep-certs/server.crt)
+$(cert_variable rep_server_key  certs/diego-certs/rep-certs/server.key)
+
+$(cert_variable ssh_proxy_host_key       certs/ssh-proxy-certs/ssh-proxy-host-key.pem)
+$(variable      host_key_fingerprint certs/ssh-proxy-certs/ssh-proxy-host-key-fingerprint)
+
+# variables end
+
+EOF
+}
+
+random_secret() {
+  openssl rand -base64 16 | tr -dc 'a-zA-Z0-9'
+}
+
+
+# ignore installing certstrap because AzureChinaCloud has problem with connecting to github
+# comment this line:
+#   go get -v github.com/square/certstrap
+comment_and_run() {
+  script=$(echo $1 | cut -d " " -f 1)
+  sed -i 's/^go get/#go get/g' ${script}
+  chmod +x ${script}
+  eval $@
+}
+
+if [ ! -e ${BOSH_TEMPLATE} ]; then
+  echo "${BOSH_TEMPLATE} is not valid"
+  exit 1
+fi
+if [ ! -e ${SINGLE_TEMPLATE} ]; then
+  echo "${SINGLE_TEMPLATE} is not valid"
+  exit 1
+fi
+if [ ! -e ${MULTIPLE_TEMPLATE} ]; then
+  echo "${MULTIPLE_TEMPLATE} is not valid"
+  exit 1
+fi
+
+echo "WORK_DIR: ${WORK_DIR}"
+cd ${WORK_DIR}
+
+# prepare scripts
+zip_artifacts=$(ls ${SCRIPT_DIR}/*.gz)
+for artifact in ${zip_artifacts}; do
+  tar -zxf ${artifact}
+done
+cf_release_dir=$(cd ${WORK_DIR}/cf-release* && pwd)
+diego_release_dir=$(cd ${WORK_DIR}/diego-release* && pwd)
+
+# generate certs
+mkdir -p certs
+pushd certs
+  comment_and_run ${cf_release_dir}/scripts/generate-consul-certs
+  comment_and_run ${cf_release_dir}/scripts/generate-dea-certs
+  comment_and_run ${cf_release_dir}/scripts/generate-hm9000-certs
+  comment_and_run ${diego_release_dir}/scripts/generate-diego-ca-certs
+  comment_and_run ${diego_release_dir}/scripts/generate-bbs-certs diego-ca diego-certs
+  comment_and_run ${diego_release_dir}/scripts/generate-rep-certs diego-ca diego-certs
+  comment_and_run ${SCRIPT_DIR}/generate-uaa-certs
+  comment_and_run ${SCRIPT_DIR}/generate-haproxy-ssl-pem
+  comment_and_run ${SCRIPT_DIR}/generate-ssh-proxy-certs
+  comment_and_run ${SCRIPT_DIR}/generate-certs blobstore-certs blobstore.service.cf.internal 
+  #comment_and_run ${SCRIPT_DIR}/generate-certs uaa-certs uaa.service.cf.internal 
+popd
+
+
+variables > ${WORK_DIR}/variables.yml
+echo ${WORK_DIR}/variables.yml
+
+single_template_temp=$(mktemp)
+multiple_template_temp=$(mktemp)
+cat ${WORK_DIR}/variables.yml ${SINGLE_TEMPLATE} > ${single_template_temp}
+cat ${WORK_DIR}/variables.yml ${MULTIPLE_TEMPLATE} > ${multiple_template_temp}
+
+# replace cf certs
+replace_certs_list="REPLACE_WITH_BLOBSTORE_CA_CERT \
+                    REPLACE_WITH_BLOBSTORE_TLS_CERT \
+                    REPLACE_WITH_BLOBSTORE_PRIVATE_KEY \
+                    REPLACE_WITH_CONSUL_CA_CERT \
+                    REPLACE_WITH_CONSUL_SERVER_CERT \
+                    REPLACE_WITH_CONSUL_SERVER_KEY \
+                    REPLACE_WITH_CONSUL_AGENT_CERT \
+                    REPLACE_WITH_CONSUL_AGENT_KEY \
+                    REPLACE_WITH_JWT_VERIFICATION_KEY \
+                    REPLACE_WITH_JWT_SIGNING_KEY \
+                    REPLACE_WITH_HM9000_SERVER_KEY \
+                    REPLACE_WITH_HM9000_SERVER_CERT \
+                    REPLACE_WITH_HM9000_CLIENT_KEY \
+                    REPLACE_WITH_HM9000_CLIENT_CERT \
+                    REPLACE_WITH_HM9000_CA_CERT \
+                    REPLACE_WITH_HA_PROXY_SSL_PEM \
+                    REPLACE_WITH_HOST_KEY_FINGERPRINT \
+
+                    REPLACE_WITH_DIEGO_CA \
+                    REPLACE_WITH_BBS_CLIENT_CERT \
+                    REPLACE_WITH_BBS_CLIENT_KEY \
+                    REPLACE_WITH_BBS_SERVER_CERT \
+                    REPLACE_WITH_BBS_SERVER_KEY \
+                    REPLACE_WITH_SSH_PROXY_HOST_KEY"
+
+for cert_name in ${replace_certs_list}; do
+  cert_variable=$(echo ${cert_name:13} | tr '[A-Z]' '[a-z]')
+  replace_variable ${single_template_temp} ${cert_name} ${cert_variable}
+  replace_variable ${multiple_template_temp} ${cert_name} ${cert_variable}
+done
+
+replace_secrets_list="REPLACE_WITH_STAGING_UPLOAD_PASSWORD \
+                      REPLACE_WITH_BULK_API_PASSWORD \
+                      REPLACE_WITH_DB_ENCRYPTION_KEY \
+                      REPLACE_WITH_BLOBSTORE_PASSWORD \
+                      REPLACE_WITH_BLOBSTORE_SECRET \
+                      REPLACE_WITH_CONSUL_ENCRYPT_KEY \
+                      REPLACE_WITH_LOGGREGATOR_ENDPOINT_SHARED_SECRET \
+                      REPLACE_WITH_NATS_PASSWORD \
+                      REPLACE_WITH_ROUTER_PASSWORD \
+                      REPLACE_WITH_ADMIN_SECRET \
+                      REPLACE_WITH_CC_CLIENT_SECRET \
+                      REPLACE_WITH_CC_ROUTING_SECRET \
+                      REPLACE_WITH_CLOUD_CONTROLLER_USERNAME_LOOKUP_SECRET \
+                      REPLACE_WITH_DOPPLER_SECRET \
+                      REPLACE_WITH_GOROUTER_SECRET \
+                      REPLACE_WITH_TCP_EMITTER_SECRET \
+                      REPLACE_WITH_TCP_ROUTER_SECRET \
+                      REPLACE_WITH_LOGIN_CLIENT_SECRET \
+                      REPLACE_WITH_NOTIFICATIONS_CLIENT_SECRET \
+                      REPLACE_WITH_CC_SERVICE_DASHBOARDS_SECRET \
+                      REPLACE_WITH_ADMIN_PASSWORD \
+                      REPLACE_WITH_CCDB_PASSWORD \
+                      REPLACE_WITH_UAADB_PASSWORD \
+                      REPLACE_WITH_DIEGODB_PASSWORD \
+                      REPLACE_WITH_A_SECURE_PASSPHRASE \
+                      REPLACE_WITH_SSH_PROXY_SECRET"
+
+for secret_name in ${replace_secrets_list}; do
+  secret_value=$(random_secret)
+  replace_value ${single_template_temp} ${secret_name} ${secret_value}
+  replace_value ${multiple_template_temp} ${secret_name} ${secret_value}
+done
+
+cp ${single_template_temp} ${SINGLE_TEMPLATE}
+cp ${multiple_template_temp} ${MULTIPLE_TEMPLATE}
+
+# Replace bosh certs
+replace_bosh_secrets_list="REPLACE_WITH_NATS_PASSWORD \
+                           REPLACE_WITH_POSTGRES_PASSWORD \
+                           REPLACE_WITH_REGISTRY_PASSWORD \
+                           REPLACE_WITH_DIRECTOR_PASSWORD \
+                           REPLACE_WITH_AGENT_PASSWORD \
+                           REPLACE_WITH_ADMIN_PASSWORD \
+                           REPLACE_WITH_HM_PASSWORD \
+                           REPLACE_WITH_MBUS_PASSWORD"
+for secret_name in ${replace_bosh_secrets_list}; do
+  secret_value=$(random_secret)
+  replace_value ${BOSH_TEMPLATE} ${secret_name} ${secret_value}
+done

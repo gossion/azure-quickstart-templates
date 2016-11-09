@@ -106,37 +106,7 @@ def get_cloud_foundry_configuration(scenario, settings, bosh_director_ip):
     }
     environment = settings["ENVIRONMENT"]
     config["DNS"] = dns_maps[environment]
-
-    with open('cloudfoundry.cert', 'r') as tmpfile:
-        ssl_cert = tmpfile.read()
-    with open('cloudfoundry.key', 'r') as tmpfile:
-        ssl_key = tmpfile.read()
-    ssl_cert_and_key = "{0}{1}".format(ssl_cert, ssl_key)
-    indentation = " " * 8
-    ssl_cert_and_key = ("\n"+indentation).join([line for line in ssl_cert_and_key.split('\n')])
-    config["SSL_CERT_AND_KEY"] = ssl_cert_and_key
-
-    ip = netaddr.IPNetwork(settings['SUBNET_ADDRESS_RANGE_FOR_CLOUD_FOUNDRY'])
-    config["GATEWAY_IP"] = str(ip[1])
-    config["RESERVED_IP_FROM"] = str(ip[2])
-    config["RESERVED_IP_TO"] = str(ip[3])
-    config["CLOUD_FOUNDRY_INTERNAL_IP"] = str(ip[4])
     config["SYSTEM_DOMAIN"] = "{0}.xip.io".format(settings["CLOUD_FOUNDRY_PUBLIC_IP"])
-
-    if scenario == "single-vm-cf":
-        config["STATIC_IP_FROM"] = str(ip[4])
-        config["STATIC_IP_TO"] = str(ip[100])
-        config["POSTGRES_IP"] = str(ip[11])
-    elif scenario == "multiple-vm-cf":
-        config["STATIC_IP_FROM"] = str(ip[4])
-        config["STATIC_IP_TO"] = str(ip[100])
-        config["HAPROXY_IP"] = str(ip[4])
-        config["POSTGRES_IP"] = str(ip[11])
-        config["ROUTER_IP"] = str(ip[12])
-        config["NATS_IP"] = str(ip[13])
-        config["ETCD_IP"] = str(ip[14])
-        config["NFS_IP"] = str(ip[15])
-        config["CONSUL_IP"] = str(ip[16])
 
     return config
 
