@@ -61,7 +61,7 @@ jobs:
     route_registrar:
       routes:
       - name: blobstore
-        port: 8080
+        port: 15000
         registration_interval: 20s
         tags:
           component: blobstore
@@ -71,7 +71,7 @@ jobs:
           name: uaa-healthcheck
           script_path: /var/vcap/jobs/uaa/bin/health_check
         name: uaa
-        port: 8082
+        port: 15002
         registration_interval: 4s
         tags:
           component: uaa
@@ -88,12 +88,12 @@ jobs:
         uris:
         - api.REPLACE_WITH_SYSTEM_DOMAIN
       - name: doppler
-        port: 8081
+        port: 15003
         registration_interval: 20s
         uris:
         - doppler.REPLACE_WITH_SYSTEM_DOMAIN
       - name: loggregator
-        port: 8083
+        port: 15004
         registration_interval: 20s
         uris:
           - "loggregator.REPLACE_WITH_SYSTEM_DOMAIN"
@@ -101,7 +101,6 @@ jobs:
       proxy:
         servers:
         - 10.0.16.4
-      port: 8082
     nfs_server:
       address: null
       allow_from_entries:
@@ -114,7 +113,6 @@ jobs:
         client_secret: REPLACE_WITH_DOPPLER_SECRET
     traffic_controller:
       zone: z1
-      outgoing_port: 8083
     diego:
       rep:
         use_azure_fault_domains: null
@@ -324,13 +322,13 @@ properties:
     admin_users:
     - password: REPLACE_WITH_BLOBSTORE_PASSWORD
       username: blobstore
-    port: 8080
+    port: 15000
     secure_link:
       secret: REPLACE_WITH_BLOBSTORE_SECRET
     tls:
       ca_cert: REPLACE_WITH_BLOBSTORE_CA_CERT
       cert: REPLACE_WITH_BLOBSTORE_TLS_CERT
-      port: 4443
+      port: 15001
       private_key: REPLACE_WITH_BLOBSTORE_PRIVATE_KEY
   capi:
     cc_uploader:
@@ -405,7 +403,7 @@ properties:
         blobstore_timeout: 5
         ca_cert: REPLACE_WITH_BLOBSTORE_CA_CERT
         password: REPLACE_WITH_BLOBSTORE_PASSWORD
-        private_endpoint: https://blobstore.service.cf.internal:4443
+        private_endpoint: https://blobstore.service.cf.internal:15001
         public_endpoint: http://blobstore.REPLACE_WITH_SYSTEM_DOMAIN
         username: blobstore
     bulk_api_password: REPLACE_WITH_BULK_API_PASSWORD
@@ -455,7 +453,7 @@ properties:
         blobstore_timeout: 5
         ca_cert: REPLACE_WITH_BLOBSTORE_CA_CERT
         password: REPLACE_WITH_BLOBSTORE_PASSWORD
-        private_endpoint: https://blobstore.service.cf.internal:4443
+        private_endpoint: https://blobstore.service.cf.internal:15001
         public_endpoint: http://blobstore.REPLACE_WITH_SYSTEM_DOMAIN
         username: blobstore
     external_host: api
@@ -526,7 +524,7 @@ properties:
         blobstore_timeout: 5
         ca_cert: REPLACE_WITH_BLOBSTORE_CA_CERT
         password: REPLACE_WITH_BLOBSTORE_PASSWORD
-        private_endpoint: https://blobstore.service.cf.internal:4443
+        private_endpoint: https://blobstore.service.cf.internal:15001
         public_endpoint: http://blobstore.REPLACE_WITH_SYSTEM_DOMAIN
         username: blobstore
     quota_definitions:
@@ -547,7 +545,7 @@ properties:
         blobstore_timeout: 5
         ca_cert: REPLACE_WITH_BLOBSTORE_CA_CERT
         password: REPLACE_WITH_BLOBSTORE_PASSWORD
-        private_endpoint: https://blobstore.service.cf.internal:4443
+        private_endpoint: https://blobstore.service.cf.internal:15001
         public_endpoint: http://blobstore.REPLACE_WITH_SYSTEM_DOMAIN
         username: blobstore
     security_event_logging:
@@ -613,7 +611,7 @@ properties:
       blobstore_timeout: 5
       ca_cert: REPLACE_WITH_BLOBSTORE_CA_CERT
       password: REPLACE_WITH_BLOBSTORE_PASSWORD
-      private_endpoint: https://blobstore.service.cf.internal:4443
+      private_endpoint: https://blobstore.service.cf.internal:15001
       public_endpoint: http://blobstore.REPLACE_WITH_SYSTEM_DOMAIN
       username: blobstore
   ccdb:
@@ -781,6 +779,7 @@ properties:
     file_server:
       dropsonde_port: null
       log_level: debug
+      listen_addr: 0.0.0.0:14002
     rep:
       bbs:
         api_location: null
@@ -814,7 +813,7 @@ properties:
         port: 4222
         user: nats
     ssh_proxy:
-      listen_addr: "0.0.0.0:2223" 
+      listen_addr: "0.0.0.0:14000" 
       bbs:
         api_location: null
         ca_cert: REPLACE_WITH_DIEGO_CA
@@ -900,8 +899,7 @@ properties:
   logger_endpoint:
     port: 4443
   loggregator:
-    outgoing_dropsonde_port: 18081
-    doppler_port: 8081
+    outgoing_dropsonde_port: 15003
     dropsonde_incoming_port: null
     etcd:
       ca_cert: ''
@@ -913,7 +911,6 @@ properties:
   loggregator_endpoint:
     shared_secret: REPLACE_WITH_LOGGREGATOR_ENDPOINT_SHARED_SECRET
   login:
-    port: 8082
     analytics:
       code: null
       domain: null
@@ -970,7 +967,7 @@ properties:
   request_timeout_in_seconds: 900
   router:
     cipher_suites: null
-    debug_address: 0.0.0.0:17002
+    debug_address: 0.0.0.0:14001
     drain_wait: null
     enable_access_log_streaming: null
     enable_proxy: null
@@ -1011,6 +1008,7 @@ properties:
   system_domain: REPLACE_WITH_SYSTEM_DOMAIN
   system_domain_organization: REPLACE_WITH_SYSTEM_DOMAIN_ORGANIZATION
   traffic_controller:
+    outgoing_port: 15004
     disable_access_control: null
     etcd:
       client_cert: ''
@@ -1102,7 +1100,7 @@ properties:
         requireLowerCaseCharacter: null
         requireSpecialCharacter: null
         requireUpperCaseCharacter: null
-    port: 8082
+    port: 15002
     require_https: null
     scim:
       external_groups: null
