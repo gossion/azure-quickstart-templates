@@ -18,8 +18,7 @@ networks:
     subnets:
     - range: 10.0.16.0/24
       gateway: 10.0.16.1
-      dns:
-      - REPLACE_WITH_DNS
+      dns: [REPLACE_WITH_DNS]
       reserved:
       - 10.0.16.2 - 10.0.16.3
       static:

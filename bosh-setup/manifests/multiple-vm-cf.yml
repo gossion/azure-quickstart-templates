@@ -1587,8 +1587,7 @@ networks:
       security_group: REPLACE_WITH_NSG_NAME_FOR_CLOUD_FOUNDRY
       subnet_name: REPLACE_WITH_SUBNET_NAME_FOR_CLOUD_FOUNDRY
       virtual_network_name: REPLACE_WITH_VNET_NAME
-    dns:
-    - REPLACE_WITH_DNS
+    dns: [REPLACE_WITH_DNS]
     gateway: 10.0.16.1
     range: 10.0.16.0/24
     reserved:
