@@ -25,13 +25,14 @@ for job in cf_diego['jobs']:
 cf_diego['properties']['etcd'] = {}
 
 # update cf_diego_template
-# Comment below changes because the manifest has generated many static IPs which affect not only job.networks.static_ip but also many properties.
 #
-#cf_diego_networks = cf_diego['networks']
-#for network in cf_diego_networks:
-#  if network['type'] == 'vip':
-#    continue
-#  network['subnets'][0]['dns'] = ["REPLACE_WITH_DNS"]
+cf_diego_networks = cf_diego['networks']
+for network in cf_diego_networks:
+  if network['type'] == 'vip':
+    continue
+  network['subnets'][0]['dns'] = ["REPLACE_WITH_DNS"]
+
+# Comment below changes because the manifest has generated many static IPs which affect not only job.networks.static_ip but also many properties.
 #  network['subnets'][0]['gateway'] = ["REPLACE_WITH_GATEWAY_IP"]
 #  if network['name'].startswith('cf'):
 #    network['subnets'][0]['reserved'] = ["REPLACE_WITH_CF_RESERVED_IP_FROM - REPLACE_WITH_CF_RESERVED_IP_TO"]
