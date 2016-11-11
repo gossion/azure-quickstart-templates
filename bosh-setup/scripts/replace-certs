@@ -120,23 +120,13 @@ fi
 echo "WORK_DIR: ${WORK_DIR}"
 cd ${WORK_DIR}
 
-# prepare scripts
-zip_artifacts=$(ls ${SCRIPT_DIR}/*.gz)
-for artifact in ${zip_artifacts}; do
-  tar -zxf ${artifact}
-done
-cf_release_dir=$(cd ${WORK_DIR}/cf-release* && pwd)
-diego_release_dir=$(cd ${WORK_DIR}/diego-release* && pwd)
-
 # generate certs
 mkdir -p certs
 pushd certs
-  comment_and_run ${cf_release_dir}/scripts/generate-consul-certs
-  comment_and_run ${cf_release_dir}/scripts/generate-dea-certs
-  comment_and_run ${cf_release_dir}/scripts/generate-hm9000-certs
-  comment_and_run ${diego_release_dir}/scripts/generate-diego-ca-certs
-  comment_and_run ${diego_release_dir}/scripts/generate-bbs-certs diego-ca diego-certs
-  comment_and_run ${diego_release_dir}/scripts/generate-rep-certs diego-ca diego-certs
+  comment_and_run ${SCRIPT_DIR}/scripts/generate-consul-certs
+  comment_and_run ${SCRIPT_DIR}/scripts/generate-hm9000-certs
+  comment_and_run ${SCRIPT_DIR}/scripts/generate-diego-ca-certs
+  comment_and_run ${SCRIPT_DIR}/scripts/generate-bbs-certs diego-ca diego-certs
   comment_and_run ${SCRIPT_DIR}/generate-uaa-jwt-certs
   comment_and_run ${SCRIPT_DIR}/generate-certs uaa-certs uaa.service.cf.internal
   comment_and_run ${SCRIPT_DIR}/generate-haproxy-ssl-pem
