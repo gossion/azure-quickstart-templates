@@ -335,6 +335,7 @@ properties:
       dropsonde_port: null
       log_level: debug
     nsync:
+      file_server_url: http://file-server.service.cf.internal:14002
       bbs:
         api_location: null
         ca_cert: REPLACE_WITH_DIEGO_CA
@@ -344,6 +345,7 @@ properties:
         max_idle_conns_per_host: null
         require_ssl: true
       cc:
+        file_server_url: http://file-server.service.cf.internal:14002
         base_url: https://api.REPLACE_WITH_SYSTEM_DOMAIN
         basic_auth_password: REPLACE_WITH_BULK_API_PASSWORD
         basic_auth_username: internal_user
