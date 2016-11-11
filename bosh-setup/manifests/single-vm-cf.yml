@@ -1,6 +1,6 @@
 compilation:
   cloud_properties:
-    instance_type: Standard_F4
+    instance_type: Standard_F1
   network: cf1
   reuse_compilation_vms: true
   workers: 2
@@ -31,9 +31,15 @@ jobs:
           blobstore: {}
           uaa: {}
           cloud_controller_ng: {}
-          loggregator_trafficcontroller: {}
+          loggregator_trafficcontroller:
+            name: loggregator_trafficcontroller
+            tags:
+            - z1
+          doppler:
+            name: doppler
+            tags:
+            - z1
           gorouter: {}
-          
     ha_proxy:
       ssl_pem: REPLACE_WITH_HA_PROXY_SSL_PEM
     metron_agent:
@@ -58,6 +64,26 @@ jobs:
       require_ssl: false
       server_cert: ''
       server_key: ''
+    uaa:
+      proxy:
+        servers:
+        - 10.0.16.4
+    nfs_server:
+      address: null
+      allow_from_entries:
+      - 10.0.16.0/24
+      share: null
+    doppler:
+      zone: z1
+    loggregator:
+      uaa:
+        client_secret: REPLACE_WITH_DOPPLER_SECRET
+    traffic_controller:
+      zone: z1
+    diego:
+      rep:
+        use_azure_fault_domains: null
+        zone: z1
     route_registrar:
       routes:
       - name: blobstore
@@ -97,26 +123,6 @@ jobs:
         registration_interval: 20s
         uris:
           - "loggregator.REPLACE_WITH_SYSTEM_DOMAIN"
-    uaa:
-      proxy:
-        servers:
-        - 10.0.16.4
-    nfs_server:
-      address: null
-      allow_from_entries:
-      - 10.0.16.0/24
-      share: null
-    doppler:
-      zone: z1
-    loggregator:
-      uaa:
-        client_secret: REPLACE_WITH_DOPPLER_SECRET
-    traffic_controller:
-      zone: z1
-    diego:
-      rep:
-        use_azure_fault_domains: null
-        zone: z1
   resource_pool: medium_z1
   templates:
   - name: consul_agent
@@ -302,7 +308,8 @@ networks:
       security_group: REPLACE_WITH_NSG_NAME_FOR_CLOUD_FOUNDRY
       subnet_name: REPLACE_WITH_SUBNET_NAME_FOR_CLOUD_FOUNDRY
       virtual_network_name: REPLACE_WITH_VNET_NAME
-    dns: [REPLACE_WITH_DNS]
+    dns:
+    - REPLACE_WITH_DNS
     gateway: 10.0.16.1
     range: 10.0.16.0/24
     reserved:
@@ -419,7 +426,7 @@ properties:
     - name: staticfile_buildpack
       package: staticfile-buildpack
     - name: java_buildpack
-      package: buildpack_java
+      package: java-buildpack
     - name: ruby_buildpack
       package: ruby-buildpack
     - name: nodejs_buildpack
@@ -465,7 +472,7 @@ properties:
     - name: staticfile_buildpack
       package: staticfile-buildpack
     - name: java_buildpack
-      package: buildpack_java
+      package: java-buildpack
     - name: ruby_buildpack
       package: ruby-buildpack
     - name: nodejs_buildpack
@@ -536,6 +543,7 @@ properties:
         total_routes: 1000
         total_service_keys: 1000
         total_services: 100
+    rate_limiter: null
     reserved_private_domains: null
     resource_pool:
       blobstore_type: webdav
@@ -583,7 +591,7 @@ properties:
     - name: staticfile_buildpack
       package: staticfile-buildpack
     - name: java_buildpack
-      package: buildpack_java
+      package: java-buildpack
     - name: ruby_buildpack
       package: ruby-buildpack
     - name: nodejs_buildpack
@@ -627,8 +635,11 @@ properties:
     - name: ccadmin
       password: REPLACE_WITH_CCDB_PASSWORD
       tag: admin
+  cf_etcd:
+    advertise_urls_dns_suffix: cf-etcd.service.cf.internal
   cflinuxfs2-rootfs:
     trusted_certs: null
+  cni-flannel: null
   collector: null
   consul:
     agent:
@@ -699,7 +710,7 @@ properties:
     server_key: null
     staging_bandwidth_limit: null
     staging_disk_inode_limit: 200000
-    staging_disk_limit_mb: 6144
+    staging_disk_limit_mb: 4096
     staging_memory_limit_mb: 1024
   description: null
   diego:
@@ -815,7 +826,7 @@ properties:
         port: 4222
         user: nats
     ssh_proxy:
-      listen_addr: "0.0.0.0:14000" 
+      listen_addr: "0.0.0.0:14000"
       bbs:
         api_location: null
         ca_cert: REPLACE_WITH_DIEGO_CA
@@ -879,9 +890,12 @@ properties:
     log_level: debug
     max_containers: null
     network_mtu: null
+    network_plugin: null
+    network_plugin_extra_args: null
     network_pool: null
     persistent_image_list:
     - /var/vcap/packages/cflinuxfs2/rootfs
+  garden-cni: null
   ha_proxy: null
   hm9000:
     ca_cert: REPLACE_WITH_HM9000_CA_CERT
@@ -966,8 +980,10 @@ properties:
     allow_from_entries:
     - 10.0.16.0/24
     share: null
+  policy-server: null
   request_timeout_in_seconds: 900
   router:
+    balancing_algorithm: null
     cipher_suites: null
     debug_address: 0.0.0.0:14001
     drain_wait: null
@@ -975,6 +991,7 @@ properties:
     enable_proxy: null
     enable_ssl: null
     extra_headers_to_log: null
+    force_forwarded_proto_https: null
     healthcheck_user_agent: null
     load_balancer_healthy_threshold: null
     logging_level: null
@@ -1118,9 +1135,9 @@ properties:
         name: admin
         password: REPLACE_WITH_ADMIN_PASSWORD
     ssl:
-      port: -1
-    sslCertificate: null
-    sslPrivateKey: null
+      port: 8443
+    sslCertificate: REPLACE_WITH_UAA_SERVER_CERT
+    sslPrivateKey: REPLACE_WITH_UAA_SERVER_KEY
     url: https://uaa.REPLACE_WITH_SYSTEM_DOMAIN
     user: null
     zones:
@@ -1138,6 +1155,7 @@ properties:
     - name: uaaadmin
       password: REPLACE_WITH_UAADB_PASSWORD
       tag: admin
+  vxlan-policy-agent: null
 releases:
 - name: diego
   version: latest
@@ -1174,4 +1192,3 @@ update:
   max_in_flight: 1
   serial: false
   update_watch_time: 5000-600000
-

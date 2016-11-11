@@ -100,9 +100,9 @@ def get_cloud_foundry_configuration(scenario, settings, bosh_director_ip):
         config[key] = settings[key]
 
     dns_maps = {
-        "AzureCloud": "168.63.129.16, {0}".format(settings["SECONDARY_DNS"]),
+        "AzureCloud": "168.63.129.16\n    -  {0}".format(settings["SECONDARY_DNS"]),
         "AzureChinaCloud": bosh_director_ip,
-        "AzureUSGovernment": "168.63.129.16, {0}".format(settings["SECONDARY_DNS"])
+        "AzureCloud": "168.63.129.16\n    -  {0}".format(settings["SECONDARY_DNS"])
     }
     environment = settings["ENVIRONMENT"]
     config["DNS"] = dns_maps[environment]

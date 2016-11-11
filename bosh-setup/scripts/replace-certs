@@ -58,6 +58,8 @@ $(cert_variable consul_server_key  certs/consul-certs/server.key)
 
 $(cert_variable jwt_verification_key certs/uaa-certs/jwt_verification_key)
 $(cert_variable jwt_signing_key      certs/uaa-certs/jwt_signing_key)
+$(cert_variable uaa_server_cert      certs/uaa-certs/server.crt)
+$(cert_variable uaa_server_key       certs/uaa-certs/server.key)
 
 $(cert_variable hm9000_ca_cert     certs/hm9000-certs/hm9000_ca.crt)
 $(cert_variable hm9000_client_cert certs/hm9000-certs/hm9000_client.crt)
@@ -135,11 +137,11 @@ pushd certs
   comment_and_run ${diego_release_dir}/scripts/generate-diego-ca-certs
   comment_and_run ${diego_release_dir}/scripts/generate-bbs-certs diego-ca diego-certs
   comment_and_run ${diego_release_dir}/scripts/generate-rep-certs diego-ca diego-certs
-  comment_and_run ${SCRIPT_DIR}/generate-uaa-certs
+  comment_and_run ${SCRIPT_DIR}/generate-uaa-jwt-certs
+  comment_and_run ${SCRIPT_DIR}/generate-certs uaa-certs uaa.service.cf.internal
   comment_and_run ${SCRIPT_DIR}/generate-haproxy-ssl-pem
   comment_and_run ${SCRIPT_DIR}/generate-ssh-proxy-certs
-  comment_and_run ${SCRIPT_DIR}/generate-certs blobstore-certs blobstore.service.cf.internal 
-  #comment_and_run ${SCRIPT_DIR}/generate-certs uaa-certs uaa.service.cf.internal 
+  comment_and_run ${SCRIPT_DIR}/generate-certs blobstore-certs blobstore.service.cf.internal
 popd
 
 
@@ -169,6 +171,8 @@ replace_certs_list="REPLACE_WITH_BLOBSTORE_CA_CERT \
                     REPLACE_WITH_HM9000_CA_CERT \
                     REPLACE_WITH_HA_PROXY_SSL_PEM \
                     REPLACE_WITH_HOST_KEY_FINGERPRINT \
+                    REPLACE_WITH_UAA_SERVER_CERT \
+                    REPLACE_WITH_UAA_SERVER_KEY \
 
                     REPLACE_WITH_DIEGO_CA \
                     REPLACE_WITH_BBS_CLIENT_CERT \

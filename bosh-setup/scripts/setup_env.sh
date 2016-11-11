@@ -85,6 +85,7 @@ cp $bosh_key $home_dir
 cp "$bosh_key.pub" $home_dir
 
 echo "Start to replace cert varialbes for manifests..."
+chmod +x replace-certs
 ./replace-certs
 
 echo "Start to run setup_env.py..."

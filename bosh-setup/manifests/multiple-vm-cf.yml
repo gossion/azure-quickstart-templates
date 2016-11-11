@@ -785,6 +785,13 @@ jobs:
   networks:
   - name: cf1
   properties:
+    consul:
+      agent:
+        services:
+          doppler:
+            name: doppler
+            tags:
+            - z1
     doppler:
       zone: z1
     metron_agent:
@@ -807,6 +814,13 @@ jobs:
   networks:
   - name: cf1
   properties:
+    consul:
+      agent:
+        services:
+          doppler:
+            name: doppler
+            tags:
+            - z2
     doppler:
       zone: z2
     metron_agent:
@@ -832,7 +846,10 @@ jobs:
     consul:
       agent:
         services:
-          loggregator_trafficcontroller: {}
+          loggregator_trafficcontroller:
+            name: loggregator_trafficcontroller
+            tags:
+            - z1
     loggregator:
       uaa:
         client_secret: REPLACE_WITH_DOPPLER_SECRET
@@ -868,7 +885,10 @@ jobs:
     consul:
       agent:
         services:
-          loggregator_trafficcontroller: {}
+          loggregator_trafficcontroller:
+            name: loggregator_trafficcontroller
+            tags:
+            - z2
     loggregator:
       uaa:
         client_secret: REPLACE_WITH_DOPPLER_SECRET
@@ -999,7 +1019,7 @@ jobs:
       skip_regex: lucid64
       skip_ssl_validation: true
       system_domain: REPLACE_WITH_SYSTEM_DOMAIN
-  resource_pool: resource_z1
+  resource_pool: small_errand
   templates:
   - name: acceptance-tests
     release: cf
@@ -1032,7 +1052,6 @@ jobs:
   persistent_disk_pool: database_disks
   properties:
     consul: {}
-    etcd: &id002 {}
     metron_agent:
       zone: z1
   resource_pool: database_z1
@@ -1055,7 +1074,6 @@ jobs:
   persistent_disk_pool: database_disks
   properties:
     consul: {}
-    etcd: *id002
     metron_agent:
       zone: z2
   resource_pool: database_z2
@@ -1078,7 +1096,6 @@ jobs:
   persistent_disk_pool: database_disks
   properties:
     consul: {}
-    etcd: *id002
     metron_agent:
       zone: z3
   resource_pool: database_z3
@@ -1587,7 +1604,8 @@ networks:
       security_group: REPLACE_WITH_NSG_NAME_FOR_CLOUD_FOUNDRY
       subnet_name: REPLACE_WITH_SUBNET_NAME_FOR_CLOUD_FOUNDRY
       virtual_network_name: REPLACE_WITH_VNET_NAME
-    dns: [REPLACE_WITH_DNS]
+    dns:
+    - REPLACE_WITH_DNS
     gateway: 10.0.16.1
     range: 10.0.16.0/24
     reserved:
@@ -1758,7 +1776,7 @@ properties:
     - name: staticfile_buildpack
       package: staticfile-buildpack
     - name: java_buildpack
-      package: buildpack_java
+      package: java-buildpack
     - name: ruby_buildpack
       package: ruby-buildpack
     - name: nodejs_buildpack
@@ -1804,7 +1822,7 @@ properties:
     - name: staticfile_buildpack
       package: staticfile-buildpack
     - name: java_buildpack
-      package: buildpack_java
+      package: java-buildpack
     - name: ruby_buildpack
       package: ruby-buildpack
     - name: nodejs_buildpack
@@ -1875,6 +1893,7 @@ properties:
         total_routes: 1000
         total_service_keys: 1000
         total_services: 100
+    rate_limiter: null
     reserved_private_domains: null
     resource_pool:
       blobstore_type: webdav
@@ -1922,7 +1941,7 @@ properties:
     - name: staticfile_buildpack
       package: staticfile-buildpack
     - name: java_buildpack
-      package: buildpack_java
+      package: java-buildpack
     - name: ruby_buildpack
       package: ruby-buildpack
     - name: nodejs_buildpack
@@ -1966,8 +1985,11 @@ properties:
     - name: ccadmin
       password: REPLACE_WITH_CCDB_PASSWORD
       tag: admin
+  cf_etcd:
+    advertise_urls_dns_suffix: cf-etcd.service.cf.internal
   cflinuxfs2-rootfs:
     trusted_certs: null
+  cni-flannel: null
   collector: null
   consul:
     agent:
@@ -2038,7 +2060,7 @@ properties:
     server_key: null
     staging_bandwidth_limit: null
     staging_disk_inode_limit: 200000
-    staging_disk_limit_mb: 6144
+    staging_disk_limit_mb: 4096
     staging_memory_limit_mb: 1024
   description: null
   diego:
@@ -2216,9 +2238,12 @@ properties:
     log_level: debug
     max_containers: null
     network_mtu: null
+    network_plugin: null
+    network_plugin_extra_args: null
     network_pool: null
     persistent_image_list:
     - /var/vcap/packages/cflinuxfs2/rootfs
+  garden-cni: null
   ha_proxy: null
   hm9000:
     ca_cert: REPLACE_WITH_HM9000_CA_CERT
@@ -2303,8 +2328,10 @@ properties:
     - 10.0.16.0/24
     - 10.0.16.0/24
     share: null
+  policy-server: null
   request_timeout_in_seconds: 900
   router:
+    balancing_algorithm: null
     cipher_suites: null
     debug_address: null
     drain_wait: null
@@ -2312,6 +2339,7 @@ properties:
     enable_proxy: null
     enable_ssl: null
     extra_headers_to_log: null
+    force_forwarded_proto_https: null
     healthcheck_user_agent: null
     load_balancer_healthy_threshold: null
     logging_level: null
@@ -2454,9 +2482,9 @@ properties:
         name: admin
         password: REPLACE_WITH_ADMIN_PASSWORD
     ssl:
-      port: -1
-    sslCertificate: null
-    sslPrivateKey: null
+      port: 8443
+    sslCertificate: REPLACE_WITH_UAA_SERVER_CERT
+    sslPrivateKey: REPLACE_WITH_UAA_SERVER_KEY
     url: https://uaa.REPLACE_WITH_SYSTEM_DOMAIN
     user: null
     zones:
@@ -2474,6 +2502,7 @@ properties:
     - name: uaaadmin
       password: REPLACE_WITH_UAADB_PASSWORD
       tag: admin
+  vxlan-policy-agent: null
 releases:
 - name: diego
   version: latest
