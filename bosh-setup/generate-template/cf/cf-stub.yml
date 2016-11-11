@@ -12,7 +12,7 @@ update:
 networks:
   - name: reserved
     type: vip
- 
+
   - name: cf1
     type: manual
     subnets:
@@ -27,7 +27,7 @@ networks:
         virtual_network_name: REPLACE_WITH_VNET_NAME
         subnet_name: REPLACE_WITH_SUBNET_NAME_FOR_CLOUD_FOUNDRY
         security_group: REPLACE_WITH_NSG_NAME_FOR_CLOUD_FOUNDRY
-  
+ 
   - name: cf2
     type: manual
     subnets: (( networks.cf1.subnets )) # cf2 unused by default with the Azure template

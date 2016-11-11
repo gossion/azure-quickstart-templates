@@ -85,7 +85,7 @@ iaas_settings:
         - 10.0.16.2 - 10.0.16.255
         static: []
 # diego2 & diego3 subnets are used for high-available deployments
-# Currently Azure only support single zone, so z2 and z3 are not used. 
+# Currently Azure only support single zone, so z2 and z3 are not used.
     - name: diego2
       type: manual
       subnets: (( iaas_settings.subnet_configs.diego1.subnets ))
