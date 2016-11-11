@@ -100,8 +100,7 @@ random_secret() {
 comment_and_run() {
   script=$(echo $1 | cut -d " " -f 1)
   sed -i 's/^go get/#go get/g' ${script}
-  chmod +x ${script}
-  eval $@
+  eval bash $@
 }
 
 if [ ! -e ${BOSH_TEMPLATE} ]; then
@@ -120,13 +119,17 @@ fi
 echo "WORK_DIR: ${WORK_DIR}"
 cd ${WORK_DIR}
 
+# install certstrap
+chmod +x ${SCRIPT_DIR}/certstrap
+cp -f ${SCRIPT_DIR}/certstrap /usr/local/bin/
+
 # generate certs
 mkdir -p certs
 pushd certs
-  comment_and_run ${SCRIPT_DIR}/scripts/generate-consul-certs
-  comment_and_run ${SCRIPT_DIR}/scripts/generate-hm9000-certs
-  comment_and_run ${SCRIPT_DIR}/scripts/generate-diego-ca-certs
-  comment_and_run ${SCRIPT_DIR}/scripts/generate-bbs-certs diego-ca diego-certs
+  comment_and_run ${SCRIPT_DIR}/generate-consul-certs
+  comment_and_run ${SCRIPT_DIR}/generate-hm9000-certs
+  comment_and_run ${SCRIPT_DIR}/generate-diego-ca-certs
+  comment_and_run ${SCRIPT_DIR}/generate-bbs-certs diego-ca diego-certs
   comment_and_run ${SCRIPT_DIR}/generate-uaa-jwt-certs
   comment_and_run ${SCRIPT_DIR}/generate-certs uaa-certs uaa.service.cf.internal
   comment_and_run ${SCRIPT_DIR}/generate-haproxy-ssl-pem
