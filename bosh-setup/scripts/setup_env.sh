@@ -96,6 +96,7 @@ sed -i "s/CLOUD_FOUNDRY_PUBLIC_IP/cf-ip/g" settings
 cp settings $home_dir
 cp bosh.yml $home_dir
 
+REPLACE_WITH_ADMIN_PASSWORD=$(cat BOSH_DIRECTOR_ADMIN_PASSWORD)
 sed -i "s/REPLACE_WITH_ADMIN_PASSWORD/$REPLACE_WITH_ADMIN_PASSWORD/g" deploy_bosh.sh
 chmod +x deploy_bosh.sh
 cp deploy_bosh.sh $home_dir

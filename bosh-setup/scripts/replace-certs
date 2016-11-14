@@ -200,7 +200,6 @@ replace_secrets_list="REPLACE_WITH_STAGING_UPLOAD_PASSWORD \
                       REPLACE_WITH_LOGIN_CLIENT_SECRET \
                       REPLACE_WITH_NOTIFICATIONS_CLIENT_SECRET \
                       REPLACE_WITH_CC_SERVICE_DASHBOARDS_SECRET \
-                      REPLACE_WITH_ADMIN_PASSWORD \
                       REPLACE_WITH_CCDB_PASSWORD \
                       REPLACE_WITH_UAADB_PASSWORD \
                       REPLACE_WITH_DIEGODB_PASSWORD \
@@ -228,4 +227,7 @@ replace_bosh_secrets_list="REPLACE_WITH_NATS_PASSWORD \
 for secret_name in ${replace_bosh_secrets_list}; do
   secret_value=$(random_secret)
   replace_value ${BOSH_TEMPLATE} ${secret_name} ${secret_value}
+  if [ ${secret_name} == "REPLACE_WITH_ADMIN_PASSWORD" ]; then
+    echo ${secret_value}  > ${SCRIPT_DIR}/BOSH_DIRECTOR_ADMIN_PASSWORD
+  fi
 done
