@@ -72,7 +72,7 @@ jobs:
   - {name: metron_agent, release: cf}
   networks:
   - name: cf_private
-    static_ips: [10.0.16.90]
+    static_ips: [10.0.16.5]
   properties:
     metron_agent:
       zone: z1
@@ -129,7 +129,7 @@ jobs:
     static_ips: REPLACE_WITH_CLOUD_FOUNDRY_PUBLIC_IP
   - name: cf_private
     default: [gateway, dns]
-    static_ips: [10.0.16.91]
+    static_ips: [10.0.16.4]
   properties:
     consul:
       agent:
@@ -141,11 +141,11 @@ jobs:
           etcd: {}
     etcd_metrics_server:
       nats:
-        machines: [10.0.16.91]
+        machines: [10.0.16.4]
         password: REPLACE_WITH_PASSWORD
         username: nats
     nfs_server:
-      address: 10.0.16.91
+      address: 10.0.16.4
       allow_from_entries: [10.0.16.0/24]
     ha_proxy:
       ssl_pem: |
@@ -201,7 +201,7 @@ jobs:
         -----END RSA PRIVATE KEY-----
     router:
       servers:
-      - 10.0.16.91
+      - 10.0.16.4
     doppler: {zone: z1}
     doppler_endpoint:
       shared_secret: REPLACE_WITH_PASSWORD
@@ -225,7 +225,7 @@ jobs:
         - admin|REPLACE_WITH_PASSWORD|scim.write,scim.read,openid,cloud_controller.admin,doppler.firehose,routing.router_groups.read
       port: 8082
     uaadb:
-      address: 10.0.16.90
+      address: 10.0.16.5
       databases:
       - {name: uaadb, tag: uaa}
       db_scheme: postgresql
@@ -427,7 +427,7 @@ properties:
         description: "Windows Server 2012 R2"
   blobstore: null
   ccdb:
-    address: 10.0.16.90
+    address: 10.0.16.5
     databases:
     - {name: ccdb, tag: cc}
     db_scheme: postgres
@@ -440,7 +440,7 @@ properties:
       domain: cf.internal
       servers:
         lan:
-        - 10.0.16.91
+        - 10.0.16.4
     agent_cert: |+
       -----BEGIN CERTIFICATE-----
       MIIEITCCAgugAwIBAgIQTDMCJHBiQrY8hlM78doHTzALBgkqhkiG9w0BAQswEzER
@@ -607,12 +607,12 @@ properties:
     shared_secret: REPLACE_WITH_PASSWORD
   etcd:
     advertise_urls_dns_suffix: etcd.service.cf.internal
-    machines: [10.0.16.91]
+    machines: [10.0.16.4]
     peer_require_ssl: false
     require_ssl: false
   etcd_metrics_server:
     nats:
-      machines: [10.0.16.91]
+      machines: [10.0.16.4]
       password: REPLACE_WITH_PASSWORD
       username: nats
   logger_endpoint:
@@ -621,7 +621,7 @@ properties:
     outgoing_dropsonde_port: 18081
     doppler_port: 8081
     etcd:
-      machines: [10.0.16.91]
+      machines: [10.0.16.4]
     tls:
       ca: null
   loggregator_endpoint:
@@ -666,12 +666,12 @@ properties:
   metron_endpoint:
     shared_secret: REPLACE_WITH_PASSWORD
   nats:
-    machines: [10.0.16.91]
+    machines: [10.0.16.4]
     password: REPLACE_WITH_PASSWORD
     port: 4222
     user: nats
   nfs_server:
-    address: 10.0.16.91
+    address: 10.0.16.4
     allow_from_entries: [10.0.16.0/24]
   ssl:
     skip_cert_verify: true
@@ -698,7 +698,7 @@ properties:
       port: 18888
       user: gorouter
   uaadb:
-    address: 10.0.16.90
+    address: 10.0.16.5
     databases:
     - {name: uaadb, tag: uaa}
     db_scheme: postgresql
@@ -900,7 +900,7 @@ properties:
         client_key: ""
         require_ssl: false
       nats:
-        machines: [10.0.16.91]
+        machines: [10.0.16.4]
         password: REPLACE_WITH_PASSWORD
         port: 4222
         user: nats

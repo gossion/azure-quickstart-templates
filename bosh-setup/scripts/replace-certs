@@ -2,13 +2,17 @@
 
 set -ex
 
-# Install spiff
-
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 WORK_DIR=$(mktemp -d /tmp/upgrade-manifest.XXXXX)
 BOSH_TEMPLATE="${SCRIPT_DIR}/bosh.yml"
 SINGLE_TEMPLATE="${SCRIPT_DIR}/single-vm-cf.yml"
 MULTIPLE_TEMPLATE="${SCRIPT_DIR}/multiple-vm-cf.yml"
+
+cleanup() {
+  echo "Cleaning up"
+  rm -rf ${WORK_DIR}
+}
+trap cleanup EXIT
 
 indent() {
   sed -e 's/^/  /'
@@ -56,25 +60,25 @@ $(cert_variable consul_agent_key   certs/consul-certs/agent.key)
 $(cert_variable consul_server_cert certs/consul-certs/server.crt)
 $(cert_variable consul_server_key  certs/consul-certs/server.key)
 
-$(cert_variable jwt_verification_key certs/uaa-certs/jwt_verification_key)
-$(cert_variable jwt_signing_key      certs/uaa-certs/jwt_signing_key)
+$(cert_variable jwt_verification_key certs/uaa-jwt-certs/jwt_verification_key)
+$(cert_variable jwt_signing_key      certs/uaa-jwt-certs/jwt_signing_key)
 $(cert_variable uaa_server_cert      certs/uaa-certs/server.crt)
 $(cert_variable uaa_server_key       certs/uaa-certs/server.key)
 
-$(cert_variable hm9000_ca_cert     certs/hm9000-certs/hm9000_ca.crt)
-$(cert_variable hm9000_client_cert certs/hm9000-certs/hm9000_client.crt)
-$(cert_variable hm9000_client_key  certs/hm9000-certs/hm9000_client.key)
-$(cert_variable hm9000_server_cert certs/hm9000-certs/hm9000_server.crt)
-$(cert_variable hm9000_server_key  certs/hm9000-certs/hm9000_server.key)
+$(cert_variable hm9000_ca_cert     certs/hm9000-certs/server_ca.crt)
+$(cert_variable hm9000_client_cert certs/hm9000-certs/agent.crt)
+$(cert_variable hm9000_client_key  certs/hm9000-certs/agent.key)
+$(cert_variable hm9000_server_cert certs/hm9000-certs/server.crt)
+$(cert_variable hm9000_server_key  certs/hm9000-certs/server.key)
 
-$(cert_variable ha_proxy_ssl_pem certs/ha-proxy-ssl-pem)
+$(cert_variable ha_proxy_ssl_pem certs/haproxy-certs/ha-proxy-ssl-pem)
 
-$(cert_variable diego_ca certs/diego-certs/diego-ca.crt)
+$(cert_variable diego_ca certs/diego-certs/server-ca.crt)
 
-$(cert_variable bbs_client_cert certs/diego-certs/bbs-certs/client.crt)
-$(cert_variable bbs_client_key  certs/diego-certs/bbs-certs/client.key)
-$(cert_variable bbs_server_cert certs/diego-certs/bbs-certs/server.crt)
-$(cert_variable bbs_server_key  certs/diego-certs/bbs-certs/server.key)
+$(cert_variable bbs_client_cert certs/diego-certs/agent.crt)
+$(cert_variable bbs_client_key  certs/diego-certs/agent.key)
+$(cert_variable bbs_server_cert certs/diego-certs/server.crt)
+$(cert_variable bbs_server_key  certs/diego-certs/server.key)
 
 $(cert_variable ssh_proxy_host_key       certs/ssh-proxy-certs/ssh-proxy-host-key.pem)
 $(variable      host_key_fingerprint certs/ssh-proxy-certs/ssh-proxy-host-key-fingerprint)
@@ -88,14 +92,32 @@ random_secret() {
   openssl rand -base64 16 | tr -dc 'a-zA-Z0-9'
 }
 
+certstrap_generate_certs() {
+  echo "=== GENERATE $1 CERTS==="
+  depot_path=$1
+  mkdir -p ${depot_path}
 
-# ignore installing certstrap because AzureChinaCloud has problem with connecting to github
-# comment this line:
-#   go get -v github.com/square/certstrap
-comment_and_run() {
-  script=$(echo $1 | cut -d " " -f 1)
-  sed -i 's/^go get/#go get/g' ${script}
-  eval bash $@
+  # CA to generate client certs
+  certstrap --depot-path ${depot_path} init --passphrase '' --common-name cert-authority
+  mv -f ${depot_path}/cert-authority.crt ${depot_path}/server-ca.crt
+  mv -f ${depot_path}/cert-authority.key ${depot_path}/server-ca.key
+
+  # Certificate to use as the client
+  server_cn=$2
+  certstrap --depot-path ${depot_path} request-cert --passphrase '' --common-name $server_cn
+  certstrap --depot-path ${depot_path} sign $server_cn --CA server-ca
+  mv -f ${depot_path}/$server_cn.key ${depot_path}/server.key
+  mv -f ${depot_path}/$server_cn.csr ${depot_path}/server.csr
+  mv -f ${depot_path}/$server_cn.crt ${depot_path}/server.crt
+
+  agent_cn=$3
+  if [ -n "$agent_cn" ]; then
+    certstrap --depot-path ${depot_path} request-cert --passphrase '' --common-name $agent_cn
+    certstrap --depot-path ${depot_path} sign $agent_cn --CA server-ca
+    mv -f ${depot_path}/$agent_cn.key ${depot_path}/agent.key
+    mv -f ${depot_path}/$agent_cn.csr ${depot_path}/agent.csr
+    mv -f ${depot_path}/$agent_cn.crt ${depot_path}/agent.crt
+  fi
 }
 
 if [ ! -e ${BOSH_TEMPLATE} ]; then
@@ -115,21 +137,43 @@ echo "WORK_DIR: ${WORK_DIR}"
 cd ${WORK_DIR}
 
 # install certstrap
-chmod +x ${SCRIPT_DIR}/certstrap
-cp -f ${SCRIPT_DIR}/certstrap /usr/local/bin/
+# workaround for building certstrap. Once certstrap is released with binary, we can remove this part of code and use the release binary instead
+tar -C /usr/local -xzf ${SCRIPT_DIR}/go1.7.3.linux-amd64.tar.gz
+export PATH=$PATH:/usr/local/go/bin
+tar xf ${SCRIPT_DIR}/v1.0.1.tar.gz
+pushd certstrap-1.0.1
+  ./build
+  cp -f bin/certstrap /usr/local/bin/
+popd
+
 
 # generate certs
 mkdir -p certs
 pushd certs
-  comment_and_run ${SCRIPT_DIR}/generate-consul-certs
-  comment_and_run ${SCRIPT_DIR}/generate-hm9000-certs
-  comment_and_run ${SCRIPT_DIR}/generate-diego-ca-certs
-  comment_and_run ${SCRIPT_DIR}/generate-bbs-certs diego-ca diego-certs
-  comment_and_run ${SCRIPT_DIR}/generate-uaa-jwt-certs
-  comment_and_run ${SCRIPT_DIR}/generate-certs uaa-certs uaa.service.cf.internal
-  comment_and_run ${SCRIPT_DIR}/generate-haproxy-ssl-pem
-  comment_and_run ${SCRIPT_DIR}/generate-ssh-proxy-certs
-  comment_and_run ${SCRIPT_DIR}/generate-certs blobstore-certs blobstore.service.cf.internal
+  certstrap_generate_certs "consul-certs" "server.dc1.cf.internal" "consul_agent"
+  certstrap_generate_certs "hm9000-certs" "listener-hm9000.service.cf.internal" "hm9000_client"
+  certstrap_generate_certs "diego-certs" "bbs.service.cf.internal" "bbs_client"
+  certstrap_generate_certs "uaa-certs" "uaa.service.cf.internal"
+  certstrap_generate_certs "blobstore-certs" "blobstore.service.cf.internal"
+
+  echo -e "=== GENERATING JWT KEY ==="
+  cert_path="uaa-jwt-certs"
+  mkdir -p ${cert_path}
+  openssl genrsa -out ${cert_path}/jwt_signing_key  2048
+  openssl rsa -pubout -in ${cert_path}/jwt_signing_key -out ${cert_path}/jwt_verification_key
+
+  echo -e "=== GENERATING SSH PROXY CERT AND FINGERPRINT ==="
+  cert_path="ssh-proxy-certs"
+  mkdir -p ${cert_path}
+  ssh-keygen -N "" -f ${cert_path}/ssh-proxy-host-key.pem
+  ssh-keygen -lf ${cert_path}/ssh-proxy-host-key.pem.pub | cut -d ' ' -f2 > ${cert_path}/ssh-proxy-host-key-fingerprint
+
+  echo -e "=== GENERATING HAPRORXY CERTS ==="
+  cert_path="haproxy-certs"
+  mkdir -p ${cert_path}
+  openssl genrsa -out ${cert_path}/ha_proxy_ssl.key 2048
+  openssl req -new -x509 -days 365 -key ${cert_path}/ha_proxy_ssl.key -out ${cert_path}/ha_proxy_ssl.cert -subj "/C=US/ST=CA/L=San Francisco/O=Azure/OU=Platform Engineering/CN=xip.io"
+  cat ${cert_path}/ha_proxy_ssl.key ${cert_path}/ha_proxy_ssl.cert > ${cert_path}/ha-proxy-ssl-pem
 popd
 
 
@@ -209,7 +253,7 @@ done
 cp ${single_template_temp} ${SINGLE_TEMPLATE}
 cp ${multiple_template_temp} ${MULTIPLE_TEMPLATE}
 
-# Replace bosh certs
+# Replace bosh secrets
 replace_bosh_secrets_list="REPLACE_WITH_NATS_PASSWORD \
                            REPLACE_WITH_POSTGRES_PASSWORD \
                            REPLACE_WITH_REGISTRY_PASSWORD \
@@ -222,6 +266,6 @@ for secret_name in ${replace_bosh_secrets_list}; do
   secret_value=$(random_secret)
   replace_value ${BOSH_TEMPLATE} ${secret_name} ${secret_value}
   if [ ${secret_name} == "REPLACE_WITH_ADMIN_PASSWORD" ]; then
-    echo ${secret_value}  > ${SCRIPT_DIR}/BOSH_DIRECTOR_ADMIN_PASSWORD
+    sed -i "s/REPLACE_WITH_ADMIN_PASSWORD/${secret_value}/g" ${SCRIPT_DIR}/deploy_bosh.sh
   fi
 done
