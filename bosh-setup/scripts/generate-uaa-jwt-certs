@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -e -x
+
+cert_path="uaa-certs"
+mkdir -p ${cert_path}
+
+echo -e "\n\n=== GENERATING JWT KEY ===\n"
+openssl genrsa -out ${cert_path}/jwt_signing_key  2048
+openssl rsa -pubout -in ${cert_path}/jwt_signing_key -out ${cert_path}/jwt_verification_key
+

@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+set -e
+
+generate_certs_and_keys () {
+  country_name=$( [[ -n $SSL_COUNTRYNAME ]] && echo $SSL_COUNTRYNAME || echo "US" )
+  state=$( [[ -n $SSL_STATE ]] && echo $SSL_STATE || echo "California" )
+  locality=$( [[ -n $SSL_LOCALITY ]] && echo $SSL_LOCALITY || echo "San Francisco" )
+  organisation=$( [[ -n $SSL_ORG ]] && echo $SSL_ORG || echo "Azure" )
+  organisational_unit=$( [[ -n $SSL_ORG_UNIT ]] && echo $SSL_ORG_UNIT || echo "Cloud Foundry" )
+  common_name=$( [[ -n $SYSTEM_DOMAIN ]] && echo $SYSTEM_DOMAIN || echo "cf-app.com" )
+
+  openssl genrsa -out private.key 2048 &&
+    echo -e "\n\n\n\n\n\n\n"
+    openssl req \
+            -sha256 \
+            -new \
+            -key private.key \
+            -out public_cert.pem \
+            -subj "/C=${country_name}/ST=${state}/L=${locality}/O=${organisation}/OU=${organisational_unit}/CN=*.${common_name}"
+
+    openssl x509 -req \
+            -days 5000 \
+            -in public_cert.pem \
+            -signkey private.key \
+            -out public_cert.pem \
+            -extfile <(
+            cat <<-EOF
+                basicConstraints=critical,CA:true,pathlen:0
+                subjectAltName=DNS:*.${common_nam}
+EOF
+      )
+  cat public_cert.pem private.key > "${1}"
+  rm public_cert.pem private.key
+}
+
+generate_certs_and_keys ha-proxy-ssl-pem

@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e -x
+
+cert_path="ssh-proxy-certs"
+mkdir -p ${cert_path}
+
+ssh-keygen -N "" -f ${cert_path}/ssh-proxy-host-key.pem
+ssh-keygen -lf ${cert_path}/ssh-proxy-host-key.pem.pub | cut -d ' ' -f2 > ${cert_path}/ssh-proxy-host-key-fingerprint
