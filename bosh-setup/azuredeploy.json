@@ -152,7 +152,7 @@
       "[uri(variables('baseUriAzureChinaCloudWithVersion'), 'manifests/multiple-vm-cf.yml')]",
       "[uri(variables('baseUriAzureChinaCloud'), 'cf-cli/cf-cli-installer_6.14.1_x86-64.deb')]",
       "https://mirror.azure.cn/go/go1.7.3.linux-amd64.tar.gz",
-      "https://github.com/square/certstrap/archive/v1.0.1.tar.gz"
+      "https://mirror.azure.cn/square/certstrap/v1.0.1/v1.0.1.tar.gz"
     ],
 
     "filesToDownload": "[variables(concat('filesToDownload', parameters('environment')))]",
