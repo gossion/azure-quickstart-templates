@@ -14,6 +14,12 @@ DIEGO_RELEASE_VERSION="v0.1487.0"
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 WORK_DIR=$(mktemp -d /tmp/upgrade-manifest.XXXXX)
 
+cleanup() {
+  echo "Cleaning up"
+  rm -rf ${WORK_DIR}
+}
+trap cleanup EXIT
+
 echo "WORK_DIR: ${WORK_DIR}"
 cd ${WORK_DIR}
 
