@@ -1,4 +1,0 @@
-etcd-properties-from-cf: (( properties.etcd ))
-
-properties:
-  etcd: (( merge ))
