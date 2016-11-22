@@ -14,12 +14,6 @@ DIEGO_RELEASE_VERSION="v0.1487.0"
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 WORK_DIR=$(mktemp -d /tmp/upgrade-manifest.XXXXX)
 
-cleanup() {
-  echo "Cleaning up"
-  rm -rf ${WORK_DIR}
-}
-trap cleanup EXIT
-
 echo "WORK_DIR: ${WORK_DIR}"
 cd ${WORK_DIR}
 
@@ -43,7 +37,7 @@ echo "cf template: ${cf_template}"
 # generate diego template which uses *CF* postgres for bbs database
 postgres_stub=$(mktemp)
 diego_template="${WORK_DIR}/diego.yml"
-spiff  merge ${SCRIPT_DIR}/diego/postgres/diego-sql.yml \
+spiff merge ${SCRIPT_DIR}/diego/postgres/diego-sql.yml \
              ${SCRIPT_DIR}/diego/postgres/diego-sql-internal.yml \
              ${cf_template} \
              > ${postgres_stub}

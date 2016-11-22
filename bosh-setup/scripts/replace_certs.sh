@@ -159,7 +159,7 @@ pushd certs
   echo -e "=== GENERATING JWT KEY ==="
   cert_path="uaa-jwt-certs"
   mkdir -p ${cert_path}
-  openssl genrsa -out ${cert_path}/jwt_signing_key  2048
+  openssl genrsa -out ${cert_path}/jwt_signing_key 2048
   openssl rsa -pubout -in ${cert_path}/jwt_signing_key -out ${cert_path}/jwt_verification_key
 
   echo -e "=== GENERATING SSH PROXY CERT AND FINGERPRINT ==="

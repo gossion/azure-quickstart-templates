@@ -90,7 +90,6 @@ def render_bosh_manifest(settings):
 def get_cloud_foundry_configuration(scenario, settings, bosh_director_ip):
     config = {}
     keys = [
-        "SUBNET_ADDRESS_RANGE_FOR_CLOUD_FOUNDRY",
         "VNET_NAME",
         "SUBNET_NAME_FOR_CLOUD_FOUNDRY",
         "CLOUD_FOUNDRY_PUBLIC_IP",
