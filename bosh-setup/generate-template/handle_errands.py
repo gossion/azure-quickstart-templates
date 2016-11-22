@@ -21,7 +21,7 @@ diego_etcd_properties = diego['properties']['etcd']
 
 for job in cf_diego['jobs']:
     if job['name'].startswith('etcd_z'):
-      job['properties']['etcd'] = cf_etcd_properties
+        job['properties']['etcd'] = cf_etcd_properties
 cf_diego['properties']['etcd'] = {}
 
 with open(cf_diego_template, 'w') as yaml_file:
