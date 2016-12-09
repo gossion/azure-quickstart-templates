@@ -211,7 +211,7 @@ echo ${WORK_DIR}/variables.yml
 
 single_template_temp="${WORK_DIR}/single-vm-cf-temp.yml"
 cf_template_temp="${WORK_DIR}/cf-deployment-temp.yml"
-diego_template_temp="${WORK_DIR}/cf-deployment-temp.yml"
+diego_template_temp="${WORK_DIR}/diego-deployment-temp.yml"
 cat ${SINGLE_TEMPLATE} > ${single_template_temp} # single template does not use these variables for certs
 cat ${WORK_DIR}/variables.yml ${CF_TEMPLATE} > ${cf_template_temp}
 cat ${WORK_DIR}/variables.yml ${DIEGO_TEMPLATE} > ${diego_template_temp}
