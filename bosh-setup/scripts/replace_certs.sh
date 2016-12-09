@@ -52,34 +52,39 @@ variables() {
   cat <<-EOF
 # variables start
 $(cert_variable blobstore_ca_cert     certs/blobstore-certs/server-ca.crt)
-$(cert_variable blobstore_tls_cert certs/blobstore-certs/server.crt)
-$(cert_variable blobstore_private_key  certs/blobstore-certs/server.key)
+$(cert_variable blobstore_tls_cert certs/blobstore-certs/blobstore-server.crt)
+$(cert_variable blobstore_private_key  certs/blobstore-certs/blobstore-server.key)
 
 $(cert_variable consul_ca_cert     certs/consul-certs/server-ca.crt)
-$(cert_variable consul_agent_cert  certs/consul-certs/agent.crt)
-$(cert_variable consul_agent_key   certs/consul-certs/agent.key)
-$(cert_variable consul_server_cert certs/consul-certs/server.crt)
-$(cert_variable consul_server_key  certs/consul-certs/server.key)
+$(cert_variable consul_agent_cert  certs/consul-certs/consul-agent.crt)
+$(cert_variable consul_agent_key   certs/consul-certs/consul-agent.key)
+$(cert_variable consul_server_cert certs/consul-certs/consul-server.crt)
+$(cert_variable consul_server_key  certs/consul-certs/consul-server.key)
 
 $(cert_variable jwt_verification_key certs/uaa-jwt-certs/jwt_verification_key)
 $(cert_variable jwt_signing_key      certs/uaa-jwt-certs/jwt_signing_key)
-$(cert_variable uaa_server_cert      certs/uaa-certs/server.crt)
-$(cert_variable uaa_server_key       certs/uaa-certs/server.key)
+$(cert_variable uaa_server_cert      certs/uaa-certs/uaa-server.crt)
+$(cert_variable uaa_server_key       certs/uaa-certs/uaa-server.key)
 
 $(cert_variable hm9000_ca_cert     certs/hm9000-certs/server-ca.crt)
-$(cert_variable hm9000_client_cert certs/hm9000-certs/agent.crt)
-$(cert_variable hm9000_client_key  certs/hm9000-certs/agent.key)
-$(cert_variable hm9000_server_cert certs/hm9000-certs/server.crt)
-$(cert_variable hm9000_server_key  certs/hm9000-certs/server.key)
+$(cert_variable hm9000_client_cert certs/hm9000-certs/hm9000-agent.crt)
+$(cert_variable hm9000_client_key  certs/hm9000-certs/hm9000-agent.key)
+$(cert_variable hm9000_server_cert certs/hm9000-certs/hm9000-server.crt)
+$(cert_variable hm9000_server_key  certs/hm9000-certs/hm9000-server.key)
 
 $(cert_variable ha_proxy_ssl_pem certs/haproxy-certs/ha-proxy-ssl-pem)
 
 $(cert_variable diego_ca certs/diego-certs/server-ca.crt)
 
-$(cert_variable bbs_client_cert certs/diego-certs/agent.crt)
-$(cert_variable bbs_client_key  certs/diego-certs/agent.key)
-$(cert_variable bbs_server_cert certs/diego-certs/server.crt)
-$(cert_variable bbs_server_key  certs/diego-certs/server.key)
+$(cert_variable bbs_client_cert certs/diego-certs/bbs-agent.crt)
+$(cert_variable bbs_client_key  certs/diego-certs/bbs-agent.key)
+$(cert_variable bbs_server_cert certs/diego-certs/bbs-server.crt)
+$(cert_variable bbs_server_key  certs/diego-certs/bbs-server.key)
+
+$(cert_variable rep_client_cert certs/diego-certs/rep-agent.crt)
+$(cert_variable rep_client_key  certs/diego-certs/rep-agent.key)
+$(cert_variable rep_server_cert certs/diego-certs/rep-server.crt)
+$(cert_variable rep_server_key  certs/diego-certs/rep-server.key)
 
 $(cert_variable ssh_proxy_host_key       certs/ssh-proxy-certs/ssh-proxy-host-key.pem)
 $(variable      host_key_fingerprint certs/ssh-proxy-certs/ssh-proxy-host-key-fingerprint)
@@ -99,6 +104,10 @@ certstrap_generate_certs() {
     case $key in
       --depot_path)
       depot_path="$2"
+      shift
+      ;;
+      --component_name)
+      component_name="$2"
       shift
       ;;
       --server_cn)
@@ -124,24 +133,28 @@ certstrap_generate_certs() {
   mkdir -p ${depot_path}
 
   # CA to generate client certs
-  certstrap --depot-path ${depot_path} init --passphrase '' --common-name cert-authority
-  mv -f ${depot_path}/cert-authority.crt ${depot_path}/server-ca.crt
-  mv -f ${depot_path}/cert-authority.key ${depot_path}/server-ca.key
+  if [ -f ${depot_path}/server-ca.crt ]; then
+    echo "CA existed on ${depot_path}, will not create CA"
+  else
+    certstrap --depot-path ${depot_path} init --passphrase '' --common-name cert-authority
+    mv -f ${depot_path}/cert-authority.crt ${depot_path}/server-ca.crt
+    mv -f ${depot_path}/cert-authority.key ${depot_path}/server-ca.key
+  fi
 
   # Server cert
   certstrap --depot-path ${depot_path} request-cert --passphrase '' --common-name "${server_cn}" ${domain_with_argument}
   certstrap --depot-path ${depot_path} sign $server_cn --CA server-ca
-  mv -f ${depot_path}/${server_cn}.key ${depot_path}/server.key
-  mv -f ${depot_path}/${server_cn}.csr ${depot_path}/server.csr
-  mv -f ${depot_path}/${server_cn}.crt ${depot_path}/server.crt
+  mv -f ${depot_path}/${server_cn}.key ${depot_path}/${component_name}-server.key
+  mv -f ${depot_path}/${server_cn}.csr ${depot_path}/${component_name}-server.csr
+  mv -f ${depot_path}/${server_cn}.crt ${depot_path}/${component_name}-server.crt
 
   # Agent cert
   if [ -n "${agent_cn}" ]; then
     certstrap --depot-path ${depot_path} request-cert --passphrase '' --common-name "${agent_cn}"
     certstrap --depot-path ${depot_path} sign ${agent_cert_name} --CA server-ca
-    mv -f ${depot_path}/${agent_cert_name}.key ${depot_path}/agent.key
-    mv -f ${depot_path}/${agent_cert_name}.csr ${depot_path}/agent.csr
-    mv -f ${depot_path}/${agent_cert_name}.crt ${depot_path}/agent.crt
+    mv -f ${depot_path}/${agent_cert_name}.key ${depot_path}/${component_name}-agent.key
+    mv -f ${depot_path}/${agent_cert_name}.csr ${depot_path}/${component_name}-agent.csr
+    mv -f ${depot_path}/${agent_cert_name}.crt ${depot_path}/${component_name}-agent.crt
   fi
 }
 
@@ -179,11 +192,12 @@ popd
 # generate certs
 mkdir -p certs
 pushd certs
-  certstrap_generate_certs --depot_path "consul-certs" --server_cn "server.dc1.cf.internal" --agent_cn "consul agent"
-  certstrap_generate_certs --depot_path "hm9000-certs" --server_cn "listener-hm9000.service.cf.internal" --domain '*.listener-hm9000.service.cf.internal,listener-hm9000.service.cf.internal' --agent_cn "hm9000_client"
-  certstrap_generate_certs --depot_path "diego-certs" --server_cn "bbs.service.cf.internal" --domain '*.bbs.service.cf.internal,bbs.service.cf.internal' --agent_cn "bbs client"
-  certstrap_generate_certs --depot_path "uaa-certs" --server_cn "uaa.service.cf.internal"
-  certstrap_generate_certs --depot_path "blobstore-certs" --server_cn "blobstore.service.cf.internal"
+  certstrap_generate_certs --depot_path "consul-certs" --component_name "consul" --server_cn "server.dc1.cf.internal" --agent_cn "consul agent"
+  certstrap_generate_certs --depot_path "hm9000-certs" --component_name "hm9000" --server_cn "listener-hm9000.service.cf.internal" --domain '*.listener-hm9000.service.cf.internal,listener-hm9000.service.cf.internal' --agent_cn "hm9000_client"
+  certstrap_generate_certs --depot_path "diego-certs" --component_name "bbs" --server_cn "bbs.service.cf.internal" --domain '*.bbs.service.cf.internal,bbs.service.cf.internal' --agent_cn "bbs client"
+  certstrap_generate_certs --depot_path "diego-certs" --component_name "rep" --server_cn "cell.service.cf.internal" --domain '*.cell.service.cf.internal,cell.service.cf.internal' --agent_cn "rep client"
+  certstrap_generate_certs --depot_path "uaa-certs" --component_name "uaa" --server_cn "uaa.service.cf.internal"
+  certstrap_generate_certs --depot_path "blobstore-certs" --component_name "blobstore" --server_cn "blobstore.service.cf.internal"
 
   echo -e "=== GENERATING JWT KEY ==="
   cert_path="uaa-jwt-certs"
@@ -242,6 +256,10 @@ replace_certs_list="REPLACE_WITH_BLOBSTORE_CA_CERT \
                     REPLACE_WITH_BBS_CLIENT_KEY \
                     REPLACE_WITH_BBS_SERVER_CERT \
                     REPLACE_WITH_BBS_SERVER_KEY \
+                    REPLACE_WITH_REP_CLIENT_CERT \
+                    REPLACE_WITH_REP_CLIENT_KEY \
+                    REPLACE_WITH_REP_SERVER_CERT \
+                    REPLACE_WITH_REP_SERVER_KEY \
                     REPLACE_WITH_SSH_PROXY_HOST_KEY"
 
 for cert_name in ${replace_certs_list}; do
@@ -274,7 +292,9 @@ replace_secrets_list="REPLACE_WITH_STAGING_UPLOAD_PASSWORD \
                       REPLACE_WITH_UAADB_PASSWORD \
                       REPLACE_WITH_DIEGODB_PASSWORD \
                       REPLACE_WITH_A_SECURE_PASSPHRASE \
-                      REPLACE_WITH_SSH_PROXY_SECRET"
+                      REPLACE_WITH_SSH_PROXY_SECRET \
+                      REPLACE_WITH_ADMIN_PASSWORD \
+                      REPLACE_WITH_PASSWORD"
 
 for secret_name in ${replace_secrets_list}; do
   secret_value=$(random_secret)
