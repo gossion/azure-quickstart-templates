@@ -6,7 +6,8 @@ SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 WORK_DIR=$(mktemp -d /tmp/upgrade-manifest.XXXXX)
 BOSH_TEMPLATE="${SCRIPT_DIR}/bosh.yml"
 SINGLE_TEMPLATE="${SCRIPT_DIR}/single-vm-cf.yml"
-MULTIPLE_TEMPLATE="${SCRIPT_DIR}/multiple-vm-cf.yml"
+CF_TEMPLATE="${SCRIPT_DIR}/cf-deployment.yml"
+DIEGO_TEMPLATE="${SCRIPT_DIR}/diego-deployment.yml"
 
 cleanup() {
   echo "Cleaning up"
@@ -152,8 +153,12 @@ if [ ! -e ${SINGLE_TEMPLATE} ]; then
   echo "${SINGLE_TEMPLATE} is not valid"
   exit 1
 fi
-if [ ! -e ${MULTIPLE_TEMPLATE} ]; then
-  echo "${MULTIPLE_TEMPLATE} is not valid"
+if [ ! -e ${CF_TEMPLATE} ]; then
+  echo "${CF_TEMPLATE} is not valid"
+  exit 1
+fi
+if [ ! -e ${DIEGO_TEMPLATE} ]; then
+  echo "${DIEGO_TEMPLATE} is not valid"
   exit 1
 fi
 
@@ -204,10 +209,12 @@ popd
 variables > ${WORK_DIR}/variables.yml
 echo ${WORK_DIR}/variables.yml
 
-single_template_temp=$(mktemp)
-multiple_template_temp=$(mktemp)
+single_template_temp="${WORK_DIR}/single-vm-cf-temp.yml"
+cf_template_temp="${WORK_DIR}/cf-deployment-temp.yml"
+diego_template_temp="${WORK_DIR}/cf-deployment-temp.yml"
 cat ${SINGLE_TEMPLATE} > ${single_template_temp} # single template does not use these variables for certs
-cat ${WORK_DIR}/variables.yml ${MULTIPLE_TEMPLATE} > ${multiple_template_temp}
+cat ${WORK_DIR}/variables.yml ${CF_TEMPLATE} > ${cf_template_temp}
+cat ${WORK_DIR}/variables.yml ${DIEGO_TEMPLATE} > ${diego_template_temp}
 
 # replace cf certs
 replace_certs_list="REPLACE_WITH_BLOBSTORE_CA_CERT \
@@ -239,7 +246,8 @@ replace_certs_list="REPLACE_WITH_BLOBSTORE_CA_CERT \
 
 for cert_name in ${replace_certs_list}; do
   cert_variable=$(echo ${cert_name:13} | tr '[A-Z]' '[a-z]')
-  replace_variable ${multiple_template_temp} ${cert_name} ${cert_variable}
+  replace_variable ${cf_template_temp} ${cert_name} ${cert_variable}
+  replace_variable ${diego_template_temp} ${cert_name} ${cert_variable}
 done
 
 replace_secrets_list="REPLACE_WITH_STAGING_UPLOAD_PASSWORD \
@@ -271,11 +279,13 @@ replace_secrets_list="REPLACE_WITH_STAGING_UPLOAD_PASSWORD \
 for secret_name in ${replace_secrets_list}; do
   secret_value=$(random_secret)
   replace_value ${single_template_temp} ${secret_name} ${secret_value}
-  replace_value ${multiple_template_temp} ${secret_name} ${secret_value}
+  replace_value ${cf_template_temp} ${secret_name} ${secret_value}
+  replace_value ${diego_template_temp} ${secret_name} ${secret_value}
 done
 
 cp ${single_template_temp} ${SINGLE_TEMPLATE}
-cp ${multiple_template_temp} ${MULTIPLE_TEMPLATE}
+cp ${cf_template_temp} ${CF_TEMPLATE}
+cp ${diego_template_temp} ${DIEGO_TEMPLATE}
 
 # Replace bosh secrets
 replace_bosh_secrets_list="REPLACE_WITH_NATS_PASSWORD \

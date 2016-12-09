@@ -110,7 +110,7 @@ def get_cloud_foundry_configuration(scenario, settings, bosh_director_ip):
     return config
 
 def render_cloud_foundry_manifest(settings, bosh_director_ip):
-    for scenario in ["single-vm-cf", "multiple-vm-cf"]:
+    for scenario in ["single-vm-cf", "cf-deployment", "diego-deployment"]:
         cloudfoundry_template = "{0}.yml".format(scenario)
         if os.path.exists(cloudfoundry_template):
             with open(cloudfoundry_template, 'r') as tmpfile:

@@ -105,9 +105,11 @@ cp utils.sh $home_dir
 example_manifests="$home_dir/example_manifests"
 mkdir -p $example_manifests
 cp single-vm-cf.yml $example_manifests 
-cp multiple-vm-cf.yml $example_manifests
+cp cf-deployment.yml $example_manifests
+cp diego-deployment.yml $example_manifests
 chmod 644 $example_manifests/single-vm-cf.yml
-chmod 644 $example_manifests/multiple-vm-cf.yml
+chmod 644 $example_manifests/cf-deployment.yml
+chmod 644 $example_manifests/diego-deployment.yml
 
 cp cf* $home_dir
 bosh_init_url=$(get_setting BOSH_INIT_URL)

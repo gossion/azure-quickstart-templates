@@ -1,0 +1,1041 @@
+compilation:
+  cloud_properties:
+    instance_type: Standard_F4
+  network: diego1
+  reuse_compilation_vms: true
+  workers: 6
+director_uuid: REPLACE_WITH_DIRECTOR_UUID
+disk_pools:
+- cloud_properties: {}
+  disk_size: 1024
+  name: database_disks
+jobs:
+- instances: 1
+  name: database_z1
+  networks:
+  - name: diego1
+  persistent_disk_pool: database_disks
+  properties:
+    consul: {}
+    metron_agent:
+      zone: z1
+  resource_pool: database_z1
+  templates:
+  - name: consul_agent
+    release: cf
+  - name: bbs
+    release: diego
+  - name: metron_agent
+    release: cf
+  - name: cfdot
+    release: diego
+  update:
+    max_in_flight: 1
+    serial: true
+- instances: 0
+  name: database_z2
+  networks:
+  - name: diego2
+  persistent_disk_pool: database_disks
+  properties:
+    consul: {}
+    metron_agent:
+      zone: z2
+  resource_pool: database_z2
+  templates:
+  - name: consul_agent
+    release: cf
+  - name: bbs
+    release: diego
+  - name: metron_agent
+    release: cf
+  - name: cfdot
+    release: diego
+  update:
+    max_in_flight: 1
+    serial: true
+- instances: 0
+  name: database_z3
+  networks:
+  - name: diego3
+  persistent_disk_pool: database_disks
+  properties:
+    consul: {}
+    metron_agent:
+      zone: z3
+  resource_pool: database_z3
+  templates:
+  - name: consul_agent
+    release: cf
+  - name: bbs
+    release: diego
+  - name: metron_agent
+    release: cf
+  - name: cfdot
+    release: diego
+  update:
+    max_in_flight: 1
+    serial: true
+- instances: 1
+  name: brain_z1
+  networks:
+  - name: diego1
+  properties:
+    metron_agent:
+      zone: z1
+  resource_pool: brain_z1
+  templates:
+  - name: consul_agent
+    release: cf
+  - name: auctioneer
+    release: diego
+  - name: metron_agent
+    release: cf
+  - name: cfdot
+    release: diego
+  update:
+    max_in_flight: 1
+    serial: true
+- instances: 1
+  name: cell_z1
+  networks:
+  - name: diego1
+  properties:
+    diego:
+      rep:
+        use_azure_fault_domains: null
+        zone: z1
+    metron_agent:
+      zone: z1
+  resource_pool: cell_z1
+  templates:
+  - name: consul_agent
+    release: cf
+  - name: rep
+    release: diego
+  - name: garden
+    release: garden-runc
+  - name: cflinuxfs2-rootfs-setup
+    release: cflinuxfs2-rootfs
+  - name: metron_agent
+    release: cf
+  - name: cfdot
+    release: diego
+  update:
+    max_in_flight: 1
+    serial: false
+- instances: 1
+  name: cc_bridge_z1
+  networks:
+  - name: diego1
+  properties:
+    metron_agent:
+      zone: z1
+  resource_pool: cc_bridge_z1
+  templates:
+  - name: consul_agent
+    release: cf
+  - name: stager
+    release: cf
+  - name: nsync
+    release: cf
+  - name: tps
+    release: cf
+  - name: cc_uploader
+    release: cf
+  - name: metron_agent
+    release: cf
+  update:
+    max_in_flight: 1
+    serial: false
+- instances: 1
+  name: route_emitter_z1
+  networks:
+  - name: diego1
+  properties:
+    metron_agent:
+      zone: z1
+  resource_pool: route_emitter_z1
+  templates:
+  - name: consul_agent
+    release: cf
+  - name: route_emitter
+    release: diego
+  - name: metron_agent
+    release: cf
+  - name: cfdot
+    release: diego
+  update:
+    max_in_flight: 1
+    serial: false
+- instances: 1
+  name: access_z1
+  networks:
+  - name: diego1
+  properties:
+    metron_agent:
+      zone: z1
+  resource_pool: access_z1
+  templates:
+  - name: consul_agent
+    release: cf
+  - name: ssh_proxy
+    release: diego
+  - name: metron_agent
+    release: cf
+  - name: file_server
+    release: diego
+  - name: cfdot
+    release: diego
+  update:
+    max_in_flight: 1
+    serial: false
+- instances: 0
+  name: brain_z2
+  networks:
+  - name: diego2
+  properties:
+    metron_agent:
+      zone: z2
+  resource_pool: brain_z2
+  templates:
+  - name: consul_agent
+    release: cf
+  - name: auctioneer
+    release: diego
+  - name: metron_agent
+    release: cf
+  - name: cfdot
+    release: diego
+  update:
+    max_in_flight: 1
+    serial: true
+- instances: 0
+  name: cell_z2
+  networks:
+  - name: diego2
+  properties:
+    diego:
+      rep:
+        use_azure_fault_domains: null
+        zone: z2
+    metron_agent:
+      zone: z2
+  resource_pool: cell_z2
+  templates:
+  - name: consul_agent
+    release: cf
+  - name: rep
+    release: diego
+  - name: garden
+    release: garden-runc
+  - name: cflinuxfs2-rootfs-setup
+    release: cflinuxfs2-rootfs
+  - name: metron_agent
+    release: cf
+  - name: cfdot
+    release: diego
+  update:
+    max_in_flight: 1
+    serial: false
+- instances: 0
+  name: cc_bridge_z2
+  networks:
+  - name: diego2
+  properties:
+    metron_agent:
+      zone: z2
+  resource_pool: cc_bridge_z2
+  templates:
+  - name: consul_agent
+    release: cf
+  - name: stager
+    release: cf
+  - name: nsync
+    release: cf
+  - name: tps
+    release: cf
+  - name: cc_uploader
+    release: cf
+  - name: metron_agent
+    release: cf
+  update:
+    max_in_flight: 1
+    serial: false
+- instances: 0
+  name: route_emitter_z2
+  networks:
+  - name: diego2
+  properties:
+    metron_agent:
+      zone: z2
+  resource_pool: route_emitter_z2
+  templates:
+  - name: consul_agent
+    release: cf
+  - name: route_emitter
+    release: diego
+  - name: metron_agent
+    release: cf
+  - name: cfdot
+    release: diego
+  update:
+    max_in_flight: 1
+    serial: false
+- instances: 0
+  name: access_z2
+  networks:
+  - name: diego2
+  properties:
+    metron_agent:
+      zone: z2
+  resource_pool: access_z2
+  templates:
+  - name: consul_agent
+    release: cf
+  - name: ssh_proxy
+    release: diego
+  - name: metron_agent
+    release: cf
+  - name: file_server
+    release: diego
+  - name: cfdot
+    release: diego
+  update:
+    max_in_flight: 1
+    serial: false
+- instances: 0
+  name: brain_z3
+  networks:
+  - name: diego3
+  properties:
+    metron_agent:
+      zone: z3
+  resource_pool: brain_z3
+  templates:
+  - name: consul_agent
+    release: cf
+  - name: auctioneer
+    release: diego
+  - name: metron_agent
+    release: cf
+  - name: cfdot
+    release: diego
+  update:
+    max_in_flight: 1
+    serial: true
+- instances: 0
+  name: cell_z3
+  networks:
+  - name: diego3
+  properties:
+    diego:
+      rep:
+        use_azure_fault_domains: null
+        zone: z3
+    metron_agent:
+      zone: z3
+  resource_pool: cell_z3
+  templates:
+  - name: consul_agent
+    release: cf
+  - name: rep
+    release: diego
+  - name: garden
+    release: garden-runc
+  - name: cflinuxfs2-rootfs-setup
+    release: cflinuxfs2-rootfs
+  - name: metron_agent
+    release: cf
+  - name: cfdot
+    release: diego
+  update:
+    max_in_flight: 1
+    serial: false
+- instances: 0
+  name: cc_bridge_z3
+  networks:
+  - name: diego3
+  properties:
+    metron_agent:
+      zone: z3
+  resource_pool: cc_bridge_z3
+  templates:
+  - name: consul_agent
+    release: cf
+  - name: stager
+    release: cf
+  - name: nsync
+    release: cf
+  - name: tps
+    release: cf
+  - name: cc_uploader
+    release: cf
+  - name: metron_agent
+    release: cf
+  update:
+    max_in_flight: 1
+    serial: false
+- instances: 0
+  name: route_emitter_z3
+  networks:
+  - name: diego3
+  properties:
+    metron_agent:
+      zone: z3
+  resource_pool: route_emitter_z3
+  templates:
+  - name: consul_agent
+    release: cf
+  - name: route_emitter
+    release: diego
+  - name: metron_agent
+    release: cf
+  - name: cfdot
+    release: diego
+  update:
+    max_in_flight: 1
+    serial: false
+- instances: 0
+  name: access_z3
+  networks:
+  - name: diego3
+  properties:
+    metron_agent:
+      zone: z3
+  resource_pool: access_z3
+  templates:
+  - name: consul_agent
+    release: cf
+  - name: ssh_proxy
+    release: diego
+  - name: metron_agent
+    release: cf
+  - name: file_server
+    release: diego
+  - name: cfdot
+    release: diego
+  update:
+    max_in_flight: 1
+    serial: false
+- instances: 0
+  name: colocated_z1
+  networks:
+  - name: diego1
+  persistent_disk_pool: database_disks
+  properties:
+    consul: {}
+    diego:
+      rep:
+        zone: z1
+    metron_agent:
+      zone: z1
+  resource_pool: colocated_z1
+  templates:
+  - name: rep
+    release: diego
+  - name: auctioneer
+    release: diego
+  - name: cc_uploader
+    release: cf
+  - name: file_server
+    release: diego
+  - name: garden
+    release: garden-runc
+  - name: nsync
+    release: cf
+  - name: cflinuxfs2-rootfs-setup
+    release: cflinuxfs2-rootfs
+  - name: route_emitter
+    release: diego
+  - name: ssh_proxy
+    release: diego
+  - name: stager
+    release: cf
+  - name: tps
+    release: cf
+  - name: consul_agent
+    release: cf
+  - name: bbs
+    release: diego
+  - name: metron_agent
+    release: cf
+  - name: cfdot
+    release: diego
+  update:
+    max_in_flight: 1
+    serial: true
+- instances: 0
+  name: colocated_z2
+  networks:
+  - name: diego2
+  persistent_disk_pool: database_disks
+  properties:
+    consul: {}
+    diego:
+      rep:
+        zone: z2
+    metron_agent:
+      zone: z2
+  resource_pool: colocated_z2
+  templates:
+  - name: rep
+    release: diego
+  - name: auctioneer
+    release: diego
+  - name: cc_uploader
+    release: cf
+  - name: file_server
+    release: diego
+  - name: garden
+    release: garden-runc
+  - name: nsync
+    release: cf
+  - name: cflinuxfs2-rootfs-setup
+    release: cflinuxfs2-rootfs
+  - name: route_emitter
+    release: diego
+  - name: ssh_proxy
+    release: diego
+  - name: stager
+    release: cf
+  - name: tps
+    release: cf
+  - name: consul_agent
+    release: cf
+  - name: bbs
+    release: diego
+  - name: metron_agent
+    release: cf
+  - name: cfdot
+    release: diego
+  update:
+    max_in_flight: 1
+    serial: true
+- instances: 0
+  name: colocated_z3
+  networks:
+  - name: diego3
+  persistent_disk_pool: database_disks
+  properties:
+    consul: {}
+    diego:
+      rep:
+        zone: z3
+    metron_agent:
+      zone: z3
+  resource_pool: colocated_z3
+  templates:
+  - name: rep
+    release: diego
+  - name: auctioneer
+    release: diego
+  - name: cc_uploader
+    release: cf
+  - name: file_server
+    release: diego
+  - name: garden
+    release: garden-runc
+  - name: nsync
+    release: cf
+  - name: cflinuxfs2-rootfs-setup
+    release: cflinuxfs2-rootfs
+  - name: route_emitter
+    release: diego
+  - name: ssh_proxy
+    release: diego
+  - name: stager
+    release: cf
+  - name: tps
+    release: cf
+  - name: consul_agent
+    release: cf
+  - name: bbs
+    release: diego
+  - name: metron_agent
+    release: cf
+  - name: cfdot
+    release: diego
+  update:
+    max_in_flight: 1
+    serial: true
+name: REPLACE_WITH_ENVIRONMENT-diego
+networks:
+- name: diego1
+  subnets:
+  - cloud_properties:
+      security_group: REPLACE_WITH_NSG_NAME_FOR_CLOUD_FOUNDRY
+      subnet_name: REPLACE_WITH_SUBNET_NAME_FOR_CLOUD_FOUNDRY
+      virtual_network_name: REPLACE_WITH_VNET_NAME
+    dns:
+    - REPLACE_WITH_DNS
+    gateway: 10.0.16.1
+    range: 10.0.16.0/20
+    reserved:
+    - 10.0.16.2 - 10.0.16.255
+    static: []
+  type: manual
+- name: diego2
+  subnets:
+  - cloud_properties:
+      security_group: REPLACE_WITH_NSG_NAME_FOR_CLOUD_FOUNDRY
+      subnet_name: REPLACE_WITH_SUBNET_NAME_FOR_CLOUD_FOUNDRY
+      virtual_network_name: REPLACE_WITH_VNET_NAME
+    dns:
+    - REPLACE_WITH_DNS
+    gateway: 10.0.16.1
+    range: 10.0.16.0/20
+    reserved:
+    - 10.0.16.2 - 10.0.16.255
+    static: []
+  type: manual
+- name: diego3
+  subnets:
+  - cloud_properties:
+      security_group: REPLACE_WITH_NSG_NAME_FOR_CLOUD_FOUNDRY
+      subnet_name: REPLACE_WITH_SUBNET_NAME_FOR_CLOUD_FOUNDRY
+      virtual_network_name: REPLACE_WITH_VNET_NAME
+    dns:
+    - REPLACE_WITH_DNS
+    gateway: 10.0.16.1
+    range: 10.0.16.0/20
+    reserved:
+    - 10.0.16.2 - 10.0.16.255
+    static: []
+  type: manual
+properties:
+  capi:
+    cc_uploader:
+      dropsonde_port: null
+      log_level: debug
+    nsync:
+      bbs:
+        api_location: null
+        ca_cert: REPLACE_WITH_DIEGO_CA
+        client_cert: REPLACE_WITH_BBS_CLIENT_CERT
+        client_key: REPLACE_WITH_BBS_CLIENT_KEY
+        client_session_cache_size: null
+        max_idle_conns_per_host: null
+        require_ssl: true
+      cc:
+        base_url: https://api.REPLACE_WITH_SYSTEM_DOMAIN
+        basic_auth_password: REPLACE_WITH_BULK_API_PASSWORD
+        basic_auth_username: internal_user
+      diego_privileged_containers: null
+      dropsonde_port: null
+      log_level: debug
+    stager:
+      bbs:
+        api_location: null
+        ca_cert: REPLACE_WITH_DIEGO_CA
+        client_cert: REPLACE_WITH_BBS_CLIENT_CERT
+        client_key: REPLACE_WITH_BBS_CLIENT_KEY
+        client_session_cache_size: null
+        max_idle_conns_per_host: null
+        require_ssl: true
+      cc:
+        basic_auth_password: REPLACE_WITH_BULK_API_PASSWORD
+        basic_auth_username: internal_user
+      diego_privileged_containers: null
+      dropsonde_port: null
+      insecure_docker_registry_list: null
+      log_level: debug
+    tps:
+      bbs:
+        api_location: null
+        ca_cert: REPLACE_WITH_DIEGO_CA
+        client_cert: REPLACE_WITH_BBS_CLIENT_CERT
+        client_key: REPLACE_WITH_BBS_CLIENT_KEY
+        client_session_cache_size: null
+        max_idle_conns_per_host: null
+        require_ssl: true
+      cc:
+        basic_auth_password: REPLACE_WITH_BULK_API_PASSWORD
+        basic_auth_username: internal_user
+      dropsonde_port: null
+      log_level: debug
+      traffic_controller_url: wss://doppler.REPLACE_WITH_SYSTEM_DOMAIN:443
+  cflinuxfs2-rootfs:
+    trusted_certs: null
+  cni-flannel: null
+  consul:
+    agent:
+      datacenter: null
+      domain: cf.internal
+      log_level: null
+      servers:
+        lan:
+        - 10.0.16.16
+    agent_cert: REPLACE_WITH_CONSUL_AGENT_CERT
+    agent_key: REPLACE_WITH_CONSUL_AGENT_KEY
+    ca_cert: REPLACE_WITH_CONSUL_CA_CERT
+    encrypt_keys:
+    - REPLACE_WITH_CONSUL_ENCRYPT_KEY
+    server_cert: REPLACE_WITH_CONSUL_SERVER_CERT
+    server_key: REPLACE_WITH_CONSUL_SERVER_KEY
+  diego:
+    auctioneer:
+      bbs:
+        api_location: null
+        ca_cert: REPLACE_WITH_DIEGO_CA
+        client_cert: REPLACE_WITH_BBS_CLIENT_CERT
+        client_key: REPLACE_WITH_BBS_CLIENT_KEY
+        client_session_cache_size: null
+        max_idle_conns_per_host: null
+        require_ssl: true
+      cell_state_timeout: null
+      dropsonde_port: null
+      log_level: debug
+      rep:
+        ca_cert: REPLACE_WITH_DIEGO_CA
+        client_cert: REPLACE_WITH_REP_CLIENT_CERT
+        client_key: REPLACE_WITH_REP_CLIENT_KEY
+        client_session_cache_size: null
+        require_tls: null
+      starting_container_weight: null
+    bbs:
+      active_key_label: bbs_key_a
+      auctioneer:
+        api_url: null
+      ca_cert: REPLACE_WITH_DIEGO_CA
+      convergence:
+        expire_completed_task_duration_in_seconds: null
+        expire_pending_task_duration_in_seconds: null
+        kick_task_duration_in_seconds: null
+        repeat_interval_in_seconds: null
+      dropsonde_port: null
+      enable_access_log: null
+      encryption_keys:
+      - label: bbs_key_a
+        passphrase: REPLACE_WITH_A_SECURE_PASSPHRASE
+      etcd:
+        ca_cert: ""
+        client_cert: ""
+        client_key: ""
+        client_session_cache_size: null
+        machines: []
+        max_idle_conns_per_host: null
+        require_ssl: null
+      log_level: debug
+      rep:
+        ca_cert: REPLACE_WITH_DIEGO_CA
+        client_cert: REPLACE_WITH_REP_CLIENT_CERT
+        client_key: REPLACE_WITH_REP_CLIENT_KEY
+        client_session_cache_size: null
+        require_tls: null
+      require_ssl: true
+      server_cert: REPLACE_WITH_BBS_SERVER_CERT
+      server_key: REPLACE_WITH_BBS_SERVER_KEY
+      sql:
+        ca_cert: null
+        db_connection_string: postgres://diego:REPLACE_WITH_DIEGODB_PASSWORD@10.0.16.8:5524/diego
+        db_driver: postgres
+        db_host: null
+        db_password: null
+        db_port: null
+        db_schema: null
+        db_username: null
+        max_open_connections: 500
+        require_ssl: null
+    cfdot:
+      bbs:
+        ca_cert: REPLACE_WITH_DIEGO_CA
+        client_cert: REPLACE_WITH_BBS_CLIENT_CERT
+        client_key: REPLACE_WITH_BBS_CLIENT_KEY
+        use_ssl: true
+    executor:
+      ca_certs_for_downloads: null
+      container_metrics_report_interval: null
+      disk_capacity_mb: null
+      drain_timeout_in_seconds: null
+      garden:
+        address: null
+        network: null
+      garden_healthcheck:
+        command_retry_pause: null
+        interval: null
+        process:
+          args: null
+          dir: null
+          env: null
+          path: null
+          user: null
+        timeout: null
+      log_level: debug
+      max_cache_size_in_bytes: null
+      memory_capacity_mb: null
+      post_setup_hook: null
+      post_setup_user: null
+    file_server:
+      dropsonde_port: null
+      log_level: debug
+    rep:
+      bbs:
+        api_location: null
+        ca_cert: REPLACE_WITH_DIEGO_CA
+        client_cert: REPLACE_WITH_BBS_CLIENT_CERT
+        client_key: REPLACE_WITH_BBS_CLIENT_KEY
+        client_session_cache_size: null
+        max_idle_conns_per_host: null
+        require_ssl: true
+      ca_cert: REPLACE_WITH_DIEGO_CA
+      dropsonde_port: null
+      enable_legacy_api_endpoints: null
+      evacuation_timeout_in_seconds: null
+      listen_addr_admin: null
+      log_level: debug
+      preloaded_rootfses:
+      - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs
+      require_tls: true
+      server_cert: REPLACE_WITH_REP_SERVER_CERT
+      server_key: REPLACE_WITH_REP_SERVER_KEY
+      trusted_certs: null
+    route_emitter:
+      bbs:
+        api_location: null
+        ca_cert: REPLACE_WITH_DIEGO_CA
+        client_cert: REPLACE_WITH_BBS_CLIENT_CERT
+        client_key: REPLACE_WITH_BBS_CLIENT_KEY
+        client_session_cache_size: null
+        max_idle_conns_per_host: null
+        require_ssl: true
+      dropsonde_port: null
+      log_level: debug
+      nats:
+        machines:
+        - 10.0.16.6
+        password: REPLACE_WITH_NATS_PASSWORD
+        port: 4222
+        user: REPLACE_WITH_NATS_USER
+    ssh_proxy:
+      bbs:
+        api_location: null
+        ca_cert: REPLACE_WITH_DIEGO_CA
+        client_cert: REPLACE_WITH_BBS_CLIENT_CERT
+        client_key: REPLACE_WITH_BBS_CLIENT_KEY
+        client_session_cache_size: null
+        max_idle_conns_per_host: null
+        require_ssl: true
+      diego_credentials: null
+      dropsonde_port: null
+      enable_cf_auth: true
+      enable_diego_auth: false
+      host_key: REPLACE_WITH_SSH_PROXY_HOST_KEY
+      uaa_secret: null
+      uaa_token_url: https://uaa.REPLACE_WITH_SYSTEM_DOMAIN/oauth/token
+    ssl:
+      skip_cert_verify: true
+  etcd: {}
+  garden:
+    allow_host_access: null
+    allow_networks: null
+    default_container_grace_time: 0
+    deny_networks:
+    - 0.0.0.0/0
+    destroy_containers_on_start: true
+    disk_quota_enabled: null
+    dns_servers: null
+    graph_cleanup_threshold_in_mb: 0
+    insecure_docker_registry_list: null
+    listen_address: null
+    listen_network: null
+    log_level: debug
+    max_containers: null
+    network_mtu: null
+    network_plugin: null
+    network_plugin_extra_args: null
+    network_pool: null
+    persistent_image_list:
+    - /var/vcap/packages/cflinuxfs2/rootfs
+  garden-cni: null
+  loggregator:
+    dropsonde_incoming_port: null
+    etcd:
+      ca_cert: ""
+      machines:
+      - cf-etcd.service.cf.internal
+      require_ssl: false
+    tls:
+      ca_cert: null
+  metron_agent:
+    deployment: REPLACE_WITH_ENVIRONMENT-diego
+    dropsonde_incoming_port: null
+    etcd:
+      client_cert: ""
+      client_key: ""
+    preferred_protocol: null
+    protocols: null
+    tls:
+      client_cert: null
+      client_key: null
+  metron_endpoint:
+    shared_secret: REPLACE_WITH_LOGGREGATOR_ENDPOINT_SHARED_SECRET
+  netman:
+    disable: null
+  policy-server: null
+  syslog_daemon_config: null
+  vxlan-policy-agent: null
+releases:
+- name: diego
+  version: latest
+- name: cflinuxfs2-rootfs
+  version: latest
+- name: garden-runc
+  version: latest
+- name: cf
+  version: latest
+resource_pools:
+- cloud_properties:
+    instance_type: Standard_F1
+  name: access_z1
+  network: diego1
+  stemcell:
+    name: bosh-azure-hyperv-ubuntu-trusty-go_agent
+    version: latest
+- cloud_properties:
+    instance_type: Standard_F1
+  name: access_z2
+  network: diego2
+  stemcell:
+    name: bosh-azure-hyperv-ubuntu-trusty-go_agent
+    version: latest
+- cloud_properties:
+    instance_type: Standard_F1
+  name: access_z3
+  network: diego3
+  stemcell:
+    name: bosh-azure-hyperv-ubuntu-trusty-go_agent
+    version: latest
+- cloud_properties:
+    instance_type: Standard_F1
+  name: brain_z1
+  network: diego1
+  stemcell:
+    name: bosh-azure-hyperv-ubuntu-trusty-go_agent
+    version: latest
+- cloud_properties:
+    instance_type: Standard_F1
+  name: brain_z2
+  network: diego2
+  stemcell:
+    name: bosh-azure-hyperv-ubuntu-trusty-go_agent
+    version: latest
+- cloud_properties:
+    instance_type: Standard_F1
+  name: brain_z3
+  network: diego3
+  stemcell:
+    name: bosh-azure-hyperv-ubuntu-trusty-go_agent
+    version: latest
+- cloud_properties:
+    instance_type: Standard_F1
+  name: cc_bridge_z1
+  network: diego1
+  stemcell:
+    name: bosh-azure-hyperv-ubuntu-trusty-go_agent
+    version: latest
+- cloud_properties:
+    instance_type: Standard_F1
+  name: cc_bridge_z2
+  network: diego2
+  stemcell:
+    name: bosh-azure-hyperv-ubuntu-trusty-go_agent
+    version: latest
+- cloud_properties:
+    instance_type: Standard_F1
+  name: cc_bridge_z3
+  network: diego3
+  stemcell:
+    name: bosh-azure-hyperv-ubuntu-trusty-go_agent
+    version: latest
+- cloud_properties:
+    instance_type: Standard_D12_v2
+  name: cell_z1
+  network: diego1
+  stemcell:
+    name: bosh-azure-hyperv-ubuntu-trusty-go_agent
+    version: latest
+- cloud_properties:
+    instance_type: Standard_D12_v2
+  name: cell_z2
+  network: diego2
+  stemcell:
+    name: bosh-azure-hyperv-ubuntu-trusty-go_agent
+    version: latest
+- cloud_properties:
+    instance_type: Standard_D12_v2
+  name: cell_z3
+  network: diego3
+  stemcell:
+    name: bosh-azure-hyperv-ubuntu-trusty-go_agent
+    version: latest
+- cloud_properties:
+    instance_type: Standard_F1
+  name: database_z1
+  network: diego1
+  stemcell:
+    name: bosh-azure-hyperv-ubuntu-trusty-go_agent
+    version: latest
+- cloud_properties:
+    instance_type: Standard_F1
+  name: database_z2
+  network: diego2
+  stemcell:
+    name: bosh-azure-hyperv-ubuntu-trusty-go_agent
+    version: latest
+- cloud_properties:
+    instance_type: Standard_F1
+  name: database_z3
+  network: diego3
+  stemcell:
+    name: bosh-azure-hyperv-ubuntu-trusty-go_agent
+    version: latest
+- cloud_properties:
+    instance_type: Standard_F1
+  name: route_emitter_z1
+  network: diego1
+  stemcell:
+    name: bosh-azure-hyperv-ubuntu-trusty-go_agent
+    version: latest
+- cloud_properties:
+    instance_type: Standard_F1
+  name: route_emitter_z2
+  network: diego2
+  stemcell:
+    name: bosh-azure-hyperv-ubuntu-trusty-go_agent
+    version: latest
+- cloud_properties:
+    instance_type: Standard_F1
+  name: route_emitter_z3
+  network: diego3
+  stemcell:
+    name: bosh-azure-hyperv-ubuntu-trusty-go_agent
+    version: latest
+- cloud_properties:
+    instance_type: Standard_F2
+  name: colocated_z1
+  network: diego1
+  stemcell:
+    name: bosh-azure-hyperv-ubuntu-trusty-go_agent
+    version: latest
+- cloud_properties:
+    instance_type: Standard_F2
+  name: colocated_z2
+  network: diego2
+  stemcell:
+    name: bosh-azure-hyperv-ubuntu-trusty-go_agent
+    version: latest
+- cloud_properties:
+    instance_type: Standard_F2
+  name: colocated_z3
+  network: diego3
+  stemcell:
+    name: bosh-azure-hyperv-ubuntu-trusty-go_agent
+    version: latest
+update:
+  canaries: 1
+  canary_watch_time: 5000-120000
+  max_in_flight: 1
+  serial: false
+  update_watch_time: 5000-120000
+
