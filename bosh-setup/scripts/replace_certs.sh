@@ -72,6 +72,26 @@ $(cert_variable hm9000_client_key  certs/hm9000-certs/hm9000-agent.key)
 $(cert_variable hm9000_server_cert certs/hm9000-certs/hm9000-server.crt)
 $(cert_variable hm9000_server_key  certs/hm9000-certs/hm9000-server.key)
 
+$(cert_variable etcd_ca_cert     certs/etcd-certs/server-ca.crt)
+$(cert_variable etcd_client_cert certs/etcd-certs/etcd-agent.crt)
+$(cert_variable etcd_client_key  certs/etcd-certs/etcd-agent.key)
+$(cert_variable etcd_server_cert certs/etcd-certs/etcd-server.crt)
+$(cert_variable etcd_server_key  certs/etcd-certs/etcd-server.key)
+
+$(cert_variable etcd_peer_ca_cert  certs/etcd_peer-certs/server-ca.crt)
+$(cert_variable etcd_peer_cert     certs/etcd_peer-certs/etcd_peer-server.crt)
+$(cert_variable etcd_peer_key      certs/etcd_peer-certs/etcd_peer-server.key)
+
+$(cert_variable loggregator_ca_cert     certs/loggregator-certs/server-ca.crt)
+$(cert_variable doppler_cert            certs/loggregator-certs/doppler-server.crt)
+$(cert_variable doppler_key             certs/loggregator-certs/doppler-server.key)
+$(cert_variable trafficcontroller_cert  certs/loggregator-certs/trafficcontroller-server.crt)
+$(cert_variable trafficcontroller_key   certs/loggregator-certs/trafficcontroller-server.key)
+
+$(cert_variable etcd_peer_ca_cert  certs/etcd_peer-certs/server-ca.crt)
+$(cert_variable etcd_peer_cert     certs/etcd_peer-certs/etcd_peer-server.crt)
+$(cert_variable etcd_peer_key      certs/etcd_peer-certs/etcd_peer-server.key)
+
 $(cert_variable ha_proxy_ssl_pem certs/haproxy-certs/ha-proxy-ssl-pem)
 
 $(cert_variable diego_ca certs/diego-certs/server-ca.crt)
@@ -194,6 +214,10 @@ mkdir -p certs
 pushd certs
   certstrap_generate_certs --depot_path "consul-certs" --component_name "consul" --server_cn "server.dc1.cf.internal" --agent_cn "consul agent"
   certstrap_generate_certs --depot_path "hm9000-certs" --component_name "hm9000" --server_cn "listener-hm9000.service.cf.internal" --domain '*.listener-hm9000.service.cf.internal,listener-hm9000.service.cf.internal' --agent_cn "hm9000_client"
+  certstrap_generate_certs --depot_path "etcd-certs" --component_name "etcd" --server_cn "cf-etcd.service.cf.internal" --domain '*.cf-etcd.service.cf.internal,cf-etcd.service.cf.internal' --agent_cn "clientName"
+  certstrap_generate_certs --depot_path "etcd_peer-certs" --component_name "etcd_peer" --server_cn "cf-etcd.service.cf.internal" --domain '*.cf-etcd.service.cf.internal,cf-etcd.service.cf.internal'
+  certstrap_generate_certs --depot_path "loggregator-certs" --component_name "doppler" --server_cn "doppler"
+  certstrap_generate_certs --depot_path "loggregator-certs" --component_name "trafficcontroller" --server_cn "trafficcontroller"
   certstrap_generate_certs --depot_path "diego-certs" --component_name "bbs" --server_cn "bbs.service.cf.internal" --domain '*.bbs.service.cf.internal,bbs.service.cf.internal' --agent_cn "bbs client"
   certstrap_generate_certs --depot_path "diego-certs" --component_name "rep" --server_cn "cell.service.cf.internal" --domain '*.cell.service.cf.internal,cell.service.cf.internal' --agent_cn "rep client"
   certstrap_generate_certs --depot_path "uaa-certs" --component_name "uaa" --server_cn "uaa.service.cf.internal"
@@ -250,6 +274,19 @@ replace_certs_list="REPLACE_WITH_BLOBSTORE_CA_CERT \
                     REPLACE_WITH_HOST_KEY_FINGERPRINT \
                     REPLACE_WITH_UAA_SERVER_CERT \
                     REPLACE_WITH_UAA_SERVER_KEY \
+                    REPLACE_WITH_ETCD_CA_CERT \
+                    REPLACE_WITH_ETCD_SERVER_CERT \
+                    REPLACE_WITH_ETCD_SERVER_KEY \
+                    REPLACE_WITH_ETCD_CLIENT_CERT \
+                    REPLACE_WITH_ETCD_CLIENT_KEY \
+                    REPLACE_WITH_ETCD_PEER_CA_CERT \
+                    REPLACE_WITH_ETCD_PEER_CERT \
+                    REPLACE_WITH_ETC_PEER_KEY \
+                    REPLACE_WITH_LOGGREGATOR_CA_CERT \
+                    REPLACE_WITH_DOPPLER_CERT \
+                    REPLACE_WITH_DOPPLER_KEY \
+                    REPLACE_WITH_TRAFFICCONTROLLER_CERT \
+                    REPLACE_WITH_TRAFFICCONTROLLER_KEY \
 
                     REPLACE_WITH_DIEGO_CA \
                     REPLACE_WITH_BBS_CLIENT_CERT \

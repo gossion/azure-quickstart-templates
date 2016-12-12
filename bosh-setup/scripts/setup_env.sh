@@ -111,7 +111,7 @@ chmod 644 $example_manifests/single-vm-cf.yml
 chmod 644 $example_manifests/cf-deployment.yml
 chmod 644 $example_manifests/diego-deployment.yml
 
-cp cf* $home_dir
+cp cf-cli* $home_dir
 bosh_init_url=$(get_setting BOSH_INIT_URL)
 install_bosh_cli_and_init $environment $bosh_init_url
 

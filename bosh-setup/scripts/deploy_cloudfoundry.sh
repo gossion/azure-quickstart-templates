@@ -15,7 +15,7 @@ usage() {
 }
 
 
-if [[ ${scenario} -ne "single" || ${scenario} -n "multiple" ]]; then
+if [ ${scenario}x != "single"x ] && [ ${scenario}x != "multiple"x ]; then
   usage
 fi
 
@@ -24,21 +24,22 @@ fi
 #    Other releases for diego, garden, and so on will keep a workable version accordingly.
 # 2. For deploying jobs in multiple nodes, we will try our best to keep the releases up-to-date.
 #
-if [[ $scenario == "single" ]]
-then
+if [ ${scenario} = "single" ]; then
   retryop "bosh upload stemcell REPLACE_WITH_STATIC_STEMCELL_URL --sha1 REPLACE_WITH_STATIC_STEMCELL_SHA1 --skip-if-exists"
   retryop "bosh upload release REPLACE_WITH_STATIC_CF_RELEASE_URL --sha1 REPLACE_WITH_STATIC_CF_RELEASE_SHA1 --skip-if-exists"
   retryop "bosh upload release REPLACE_WITH_STATIC_DIEGO_RELEASE_URL --sha1 REPLACE_WITH_STATIC_DIEGO_RELEASE_SHA1 --skip-if-exists"
   retryop "bosh upload release REPLACE_WITH_STATIC_GARDEN_RELEASE_URL --sha1 REPLACE_WITH_STATIC_GARDEN_RELEASE_SHA1 --skip-if-exists"
   retryop "bosh upload release REPLACE_WITH_STATIC_CFLINUXFS2_RELEASE_URL --sha1 REPLACE_WITH_STATIC_CFLINUXFS2_RELEASE_SHA1 --skip-if-exists"
+  set -e
   bosh deployment ${SINGLE_MANIFEST}
   bosh -n deploy
-elif [[ $scenario == "multiple" ]]
+elif [ ${scenario} = "multiple" ]; then
   retryop "bosh upload stemcell REPLACE_WITH_DYNAMIC_STEMCELL_URL --sha1 REPLACE_WITH_DYNAMIC_STEMCELL_SHA1 --skip-if-exists"
   retryop "bosh upload release REPLACE_WITH_DYNAMIC_CF_RELEASE_URL --sha1 REPLACE_WITH_DYNAMIC_CF_RELEASE_SHA1 --skip-if-exists"
   retryop "bosh upload release REPLACE_WITH_DYNAMIC_DIEGO_RELEASE_URL --sha1 REPLACE_WITH_DYNAMIC_DIEGO_RELEASE_SHA1 --skip-if-exists"
   retryop "bosh upload release REPLACE_WITH_DYNAMIC_GARDEN_RELEASE_URL --sha1 REPLACE_WITH_DYNAMIC_GARDEN_RELEASE_SHA1 --skip-if-exists"
   retryop "bosh upload release REPLACE_WITH_DYNAMIC_CFLINUXFS2_RELEASE_URL --sha1 REPLACE_WITH_DYNAMIC_CFLINUXFS2_RELEASE_SHA1 --skip-if-exists"
+  set -e
   bosh deployment ${CF_MANIFEST}
   bosh -n deploy
   bosh deployment ${DIEGO_MANIFEST}

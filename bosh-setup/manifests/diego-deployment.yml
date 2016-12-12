@@ -851,18 +851,18 @@ properties:
   loggregator:
     dropsonde_incoming_port: null
     etcd:
-      ca_cert: ""
+      ca_cert: REPLACE_WITH_ETCD_CA_CERT
       machines:
       - cf-etcd.service.cf.internal
-      require_ssl: false
+      require_ssl: true
     tls:
-      ca_cert: null
+      ca_cert: REPLACE_WITH_LOGGREGATOR_CA_CERT
   metron_agent:
     deployment: REPLACE_WITH_ENVIRONMENT-diego
     dropsonde_incoming_port: null
     etcd:
-      client_cert: ""
-      client_key: ""
+      client_cert: REPLACE_WITH_ETCD_CLIENT_CERT
+      client_key: REPLACE_WITH_ETCD_CLIENT_KEY
     preferred_protocol: null
     protocols: null
     tls:
