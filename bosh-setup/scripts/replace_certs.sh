@@ -88,10 +88,6 @@ $(cert_variable doppler_key             certs/loggregator-certs/doppler-server.k
 $(cert_variable trafficcontroller_cert  certs/loggregator-certs/trafficcontroller-server.crt)
 $(cert_variable trafficcontroller_key   certs/loggregator-certs/trafficcontroller-server.key)
 
-$(cert_variable etcd_peer_ca_cert  certs/etcd_peer-certs/server-ca.crt)
-$(cert_variable etcd_peer_cert     certs/etcd_peer-certs/etcd_peer-server.crt)
-$(cert_variable etcd_peer_key      certs/etcd_peer-certs/etcd_peer-server.key)
-
 $(cert_variable ha_proxy_ssl_pem certs/haproxy-certs/ha-proxy-ssl-pem)
 
 $(cert_variable diego_ca certs/diego-certs/server-ca.crt)
@@ -281,7 +277,7 @@ replace_certs_list="REPLACE_WITH_BLOBSTORE_CA_CERT \
                     REPLACE_WITH_ETCD_CLIENT_KEY \
                     REPLACE_WITH_ETCD_PEER_CA_CERT \
                     REPLACE_WITH_ETCD_PEER_CERT \
-                    REPLACE_WITH_ETC_PEER_KEY \
+                    REPLACE_WITH_ETCD_PEER_KEY \
                     REPLACE_WITH_LOGGREGATOR_CA_CERT \
                     REPLACE_WITH_DOPPLER_CERT \
                     REPLACE_WITH_DOPPLER_KEY \
