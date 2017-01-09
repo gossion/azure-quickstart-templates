@@ -1,6 +1,11 @@
 property_overrides:
   auctioneer:
     log_level: debug
+    ca_cert: REPLACE_WITH_DIEGO_CA
+    client_cert: REPLACE_WITH_AUCTIONEER_CLIENT_CERT
+    client_key: REPLACE_WITH_AUCTIONEER_CLIENT_KEY
+    server_cert: REPLACE_WITH_AUCTIONEER_SERVER_CERT
+    server_key: REPLACE_WITH_AUCTIONEER_SERVER_KEY
   bbs:
     active_key_label: bbs_key_a
     ca_cert: REPLACE_WITH_DIEGO_CA
@@ -39,9 +44,6 @@ property_overrides:
     log_level: debug
   nsync:
     log_level: debug
-  rep:
-    log_level: debug
-    require_tls: false
   route_emitter:
     log_level: debug
   skip_cert_verify: true
@@ -52,4 +54,11 @@ property_overrides:
     log_level: debug
   tps:
     log_level: debug
-
+  rep:
+    ca_cert: REPLACE_WITH_DIEGO_CA
+    client_cert: REPLACE_WITH_REP_CLIENT_CERT
+    client_key: REPLACE_WITH_REP_CLIENT_KEY
+    log_level: debug
+    require_tls: true
+    server_cert: REPLACE_WITH_REP_SERVER_CERT
+    server_key: REPLACE_WITH_REP_SERVER_KEY

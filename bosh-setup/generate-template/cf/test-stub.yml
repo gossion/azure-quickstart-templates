@@ -54,7 +54,7 @@ jobs:
       include_operator: true
       include_security_groups: false
       include_services: true
-      java_buildpack_name: java_buildpack_offline
+      java_buildpack_name: java_offline_buildpack
       skip_diego_unsupported_tests: true
       skip_regex: lucid64
       skip_ssl_validation: true

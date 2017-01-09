@@ -24,5 +24,7 @@ for job in cf_diego['jobs']:
         job['properties']['etcd'] = cf_etcd_properties
 cf_diego['properties']['etcd'] = {}
 
+cf_diego['properties']['loggregator'].update(cf['properties']['loggregator'])
+
 with open(cf_diego_template, 'w') as yaml_file:
     yaml.dump(cf_diego, yaml_file, Dumper=yaml.SafeDumper, default_flow_style=False)
