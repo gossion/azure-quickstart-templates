@@ -158,6 +158,12 @@ properties:
     client_key: REPLACE_WITH_HM9000_CLIENT_KEY
     client_cert: REPLACE_WITH_HM9000_CLIENT_CERT
     ca_cert: REPLACE_WITH_HM9000_CA_CERT
+  login:
+    saml:
+      serviceProviderKey: REPLACE_WITH_SAML_KEY
+      serviceProviderKeyPassword: ''
+      serviceProviderCertificate: REPLACE_WITH_SAML_CERT
+
 
 jobs:
   - name: ha_proxy_z1
