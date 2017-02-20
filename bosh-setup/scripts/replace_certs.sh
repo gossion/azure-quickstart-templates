@@ -330,8 +330,8 @@ replace_certs_list="REPLACE_WITH_CONSUL_CA_CERT \
                     REPLACE_WITH_AUCTIONEER_CLIENT_KEY \
                     REPLACE_WITH_AUCTIONEER_SERVER_CERT \
                     REPLACE_WITH_AUCTIONEER_SERVER_KEY \
-                    REPLACE_WITH_TPS_SERVER_CERT \
-                    REPLACE_WITH_TPS_SERVER_KEY \
+                    REPLACE_WITH_TPS_CLIENT_CERT \
+                    REPLACE_WITH_TPS_CLIENT_KEY \
                     REPLACE_WITH_SSH_PROXY_HOST_KEY \
                     REPLACE_WITH_SAML_KEY \
                     REPLACE_WITH_SAML_CERT"
