@@ -235,7 +235,9 @@ jobs:
     release: cf
   - name: blobstore
     release: cf
-  - name: route_registrar
+  - consumes:
+      nats: nil
+    name: route_registrar
     release: cf
   update: {}
 - default_networks:
@@ -269,7 +271,9 @@ jobs:
     release: cf
   - name: blobstore
     release: cf
-  - name: route_registrar
+  - consumes:
+      nats: nil
+    name: route_registrar
     release: cf
   update: {}
 - default_networks:
@@ -334,7 +338,9 @@ jobs:
     release: cf
   - name: metron_agent
     release: cf
-  - name: route_registrar
+  - consumes:
+      nats: nil
+    name: route_registrar
     release: cf
   - name: statsd-injector
     release: cf
@@ -379,7 +385,9 @@ jobs:
     release: cf
   - name: metron_agent
     release: cf
-  - name: route_registrar
+  - consumes:
+      nats: nil
+    name: route_registrar
     release: cf
   - name: statsd-injector
     release: cf
@@ -437,13 +445,17 @@ jobs:
     release: cf
   - name: dotnet-core-buildpack
     release: cf
-  - name: cloud_controller_ng
+  - consumes:
+      nats: nil
+    name: cloud_controller_ng
     release: cf
   - name: metron_agent
     release: cf
   - name: statsd-injector
     release: cf
-  - name: route_registrar
+  - consumes:
+      nats: nil
+    name: route_registrar
     release: cf
   update: {}
 - default_networks:
@@ -499,13 +511,17 @@ jobs:
     release: cf
   - name: dotnet-core-buildpack
     release: cf
-  - name: cloud_controller_ng
+  - consumes:
+      nats: nil
+    name: cloud_controller_ng
     release: cf
   - name: metron_agent
     release: cf
   - name: statsd-injector
     release: cf
-  - name: route_registrar
+  - consumes:
+      nats: nil
+    name: route_registrar
     release: cf
   update: {}
 - default_networks:
@@ -522,7 +538,9 @@ jobs:
   templates:
   - name: consul_agent
     release: cf
-  - name: cloud_controller_clock
+  - consumes:
+      nats: nil
+    name: cloud_controller_clock
     release: cf
   - name: metron_agent
     release: cf
@@ -547,7 +565,9 @@ jobs:
   templates:
   - name: consul_agent
     release: cf
-  - name: cloud_controller_worker
+  - consumes:
+      nats: nil
+    name: cloud_controller_worker
     release: cf
   - name: metron_agent
     release: cf
@@ -572,7 +592,9 @@ jobs:
   templates:
   - name: consul_agent
     release: cf
-  - name: cloud_controller_worker
+  - consumes:
+      nats: nil
+    name: cloud_controller_worker
     release: cf
   - name: metron_agent
     release: cf
@@ -607,7 +629,9 @@ jobs:
     release: cf
   - name: metron_agent
     release: cf
-  - name: route_registrar
+  - consumes:
+      nats: nil
+    name: route_registrar
     release: cf
   update: {}
 - default_networks:
@@ -640,7 +664,9 @@ jobs:
     release: cf
   - name: metron_agent
     release: cf
-  - name: route_registrar
+  - consumes:
+      nats: nil
+    name: route_registrar
     release: cf
   update: {}
 - default_networks:
@@ -842,7 +868,9 @@ jobs:
     release: cf
   - name: metron_agent
     release: cf
-  - name: route_registrar
+  - consumes:
+      nats: nil
+    name: route_registrar
     release: cf
   update:
     max_in_flight: 1
@@ -880,7 +908,9 @@ jobs:
     release: cf
   - name: metron_agent
     release: cf
-  - name: route_registrar
+  - consumes:
+      nats: nil
+    name: route_registrar
     release: cf
   update:
     max_in_flight: 1
@@ -904,7 +934,9 @@ jobs:
   templates:
   - name: consul_agent
     release: cf
-  - name: gorouter
+  - consumes:
+      nats: nil
+    name: gorouter
     release: cf
   - name: metron_agent
     release: cf
@@ -927,7 +959,9 @@ jobs:
   templates:
   - name: consul_agent
     release: cf
-  - name: gorouter
+  - consumes:
+      nats: nil
+    name: gorouter
     release: cf
   - name: metron_agent
     release: cf
@@ -1144,6 +1178,8 @@ jobs:
       rep:
         use_azure_fault_domains: null
         zone: z1
+      route_emitter:
+        local_mode: false
     metron_agent:
       zone: z1
   resource_pool: cell_z1
@@ -1258,6 +1294,8 @@ jobs:
       rep:
         use_azure_fault_domains: null
         zone: z2
+      route_emitter:
+        local_mode: false
     metron_agent:
       zone: z2
   resource_pool: cell_z2
@@ -1372,6 +1410,8 @@ jobs:
       rep:
         use_azure_fault_domains: null
         zone: z3
+      route_emitter:
+        local_mode: false
     metron_agent:
       zone: z3
   resource_pool: cell_z3
@@ -1729,7 +1769,11 @@ properties:
       cc:
         basic_auth_password: REPLACE_WITH_BULK_API_PASSWORD
         basic_auth_username: internal_user
+        ca_cert: REPLACE_WITH_DIEGO_CA
+        client_cert: REPLACE_WITH_TPS_CLIENT_CERT
+        client_key: REPLACE_WITH_TPS_CLIENT_KEY
       dropsonde_port: null
+      listener_enabled: null
       log_level: debug
   cc:
     allow_app_ssh_access: true
@@ -1795,9 +1839,11 @@ properties:
       bbs:
         url: null
       insecure_docker_registry_list: null
+      pid_limit: null
       temporary_local_apps: null
       temporary_local_staging: null
       temporary_local_tasks: null
+      temporary_local_tps: null
       use_privileged_containers_for_staging: null
     directories: null
     disable_custom_buildpacks: false
@@ -1860,9 +1906,9 @@ properties:
     min_recommended_cli_version: null
     minimum_candidate_stagers: null
     mutual_tls:
-      ca_cert: null
-      private_key: null
-      public_cert: null
+      ca_cert: CC_MUTUAL_TLS_CA_CERT
+      private_key: CC_MUTUAL_TLS_PRIVATE_KEY
+      public_cert: CC_MUTUAL_TLS_PUBLIC_CERT
     newrelic:
       capture_params: false
       developer_mode: false
@@ -1968,9 +2014,9 @@ properties:
     - name: ccadmin
       password: REPLACE_WITH_CCDB_PASSWORD
       tag: admin
+  cf_networking: null
   cflinuxfs2-rootfs:
     trusted_certs: null
-  cni-flannel: null
   collector: null
   consul:
     agent:
@@ -2095,6 +2141,8 @@ properties:
         machines: []
         max_idle_conns_per_host: null
         require_ssl: true
+      locket:
+        api_location: null
       log_level: debug
       rep:
         ca_cert: REPLACE_WITH_DIEGO_CA
@@ -2105,6 +2153,7 @@ properties:
       require_ssl: true
       server_cert: REPLACE_WITH_BBS_SERVER_CERT
       server_key: REPLACE_WITH_BBS_SERVER_KEY
+      skip_consul_lock: null
       sql:
         ca_cert: null
         db_connection_string: null
@@ -2114,6 +2163,7 @@ properties:
         db_port: 5524
         db_schema: diego
         db_username: diego
+        max_idle_connections: null
         max_open_connections: null
         require_ssl: null
     cfdot:
@@ -2140,6 +2190,8 @@ properties:
           path: null
           user: null
         timeout: null
+      instance_identity_ca_cert: null
+      instance_identity_key: null
       log_level: debug
       max_cache_size_in_bytes: null
       memory_capacity_mb: null
@@ -2148,6 +2200,14 @@ properties:
     file_server:
       dropsonde_port: null
       log_level: debug
+    locket:
+      sql:
+        db_driver: null
+        db_host: null
+        db_password: null
+        db_port: null
+        db_schema: null
+        db_username: null
     rep:
       bbs:
         api_location: null
@@ -2200,8 +2260,11 @@ properties:
       enable_cf_auth: true
       enable_diego_auth: false
       host_key: REPLACE_WITH_SSH_PROXY_HOST_KEY
+      uaa:
+        ca_cert: REPLACE_WITH_UAA_CA_CERT
+        port: 8443
+        url: null
       uaa_secret: REPLACE_WITH_SSH_PROXY_SECRET
-      uaa_token_url: https://uaa.REPLACE_WITH_SYSTEM_DOMAIN/oauth/token
     ssl:
       skip_cert_verify: true
   disk_quota_enabled: true
@@ -2255,7 +2318,6 @@ properties:
     network_pool: null
     persistent_image_list:
     - /var/vcap/packages/cflinuxfs2/rootfs
-  garden-cni: null
   ha_proxy: null
   hm9000:
     ca_cert: REPLACE_WITH_HM9000_CA_CERT
@@ -2293,6 +2355,9 @@ properties:
       metron:
         cert: REPLACE_WITH_METRON_CERT
         key: REPLACE_WITH_METRON_KEY
+      syslogdrainbinder:
+        cert: REPLACE_WITH_SYSLOGDRAINBINDER_CERT
+        key: REPLACE_WITH_SYSLOGDRAINBINDER_KEY
       trafficcontroller:
         cert: REPLACE_WITH_TRAFFICCONTROLLER_CERT
         key: REPLACE_WITH_TRAFFICCONTROLLER_KEY
@@ -2317,9 +2382,9 @@ properties:
     protocol: null
     restricted_ips_regex: null
     saml:
+      serviceProviderCertificate: REPLACE_WITH_SAML_CERT
       serviceProviderKey: REPLACE_WITH_SAML_KEY
       serviceProviderKeyPassword: ''
-      serviceProviderCertificate: REPLACE_WITH_SAML_CERT
     self_service_links_enabled: null
     smtp:
       host: null
@@ -2350,15 +2415,12 @@ properties:
     prof_port: 0
     trace: false
     user: nats
-  netman:
-    disable: null
   nfs_server:
     address: null
     allow_from_entries:
     - 10.0.16.0/24
     - 10.0.16.0/24
     share: null
-  policy-server: null
   request_timeout_in_seconds: 900
   router:
     balancing_algorithm: null
@@ -2374,6 +2436,7 @@ properties:
     load_balancer_healthy_threshold: null
     logging_level: null
     logrotate: null
+    max_idle_connections: null
     port: null
     requested_route_registration_interval_in_seconds: null
     route_services_recommend_https: null
@@ -2393,6 +2456,8 @@ properties:
       enable_zipkin: null
   routing_api:
     enabled: null
+    port: null
+    uri: null
   smoke_tests: null
   ssl:
     skip_cert_verify: true
@@ -2420,7 +2485,7 @@ properties:
         countFailuresWithinSeconds: null
         lockoutAfterFailures: null
         lockoutPeriodSeconds: null
-    ca_cert: null
+    ca_cert: REPLACE_WITH_UAA_CA_CERT
     catalina_opts: null
     cc:
       client_secret: REPLACE_WITH_CC_CLIENT_SECRET
@@ -2440,7 +2505,7 @@ properties:
         authorized-grant-types: password,refresh_token
         override: true
         refresh-token-validity: 604800
-        scope: cloud_controller.read,cloud_controller.write,openid,password.write,cloud_controller.admin,cloud_controller.admin_read_only,scim.read,scim.write,doppler.firehose,uaa.user,routing.router_groups.read,routing.router_groups.write
+        scope: cloud_controller.read,cloud_controller.write,openid,password.write,cloud_controller.admin,cloud_controller.admin_read_only,cloud_controller.global_auditor,scim.read,scim.write,doppler.firehose,uaa.user,routing.router_groups.read,routing.router_groups.write
       cloud_controller_username_lookup:
         authorities: scim.userids
         authorized-grant-types: client_credentials
@@ -2473,11 +2538,11 @@ properties:
         scope: openid,cloud_controller.read,cloud_controller.write,cloud_controller.admin
         secret: REPLACE_WITH_SSH_PROXY_SECRET
       tcp_emitter:
-        authorities: routing.routes.write,routing.routes.read,routing.router_groups.read
+        authorities: routing.routes.write,routing.routes.read
         authorized-grant-types: client_credentials,refresh_token
         secret: REPLACE_WITH_TCP_EMITTER_SECRET
       tcp_router:
-        authorities: routing.routes.read,routing.router_groups.read
+        authorities: routing.routes.read
         authorized-grant-types: client_credentials,refresh_token
         secret: REPLACE_WITH_TCP_ROUTER_SECRET
     database: null
@@ -2515,6 +2580,7 @@ properties:
       port: 8443
     sslCertificate: REPLACE_WITH_UAA_SERVER_CERT
     sslPrivateKey: REPLACE_WITH_UAA_SERVER_KEY
+    token_endpoint: null
     url: https://uaa.REPLACE_WITH_SYSTEM_DOMAIN
     user:
       authorities:
@@ -2549,7 +2615,6 @@ properties:
     - name: uaaadmin
       password: REPLACE_WITH_UAADB_PASSWORD
       tag: admin
-  vxlan-policy-agent: null
 releases:
 - name: diego
   version: latest
