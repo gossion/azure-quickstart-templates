@@ -1906,9 +1906,9 @@ properties:
     min_recommended_cli_version: null
     minimum_candidate_stagers: null
     mutual_tls:
-      ca_cert: CC_MUTUAL_TLS_CA_CERT
-      private_key: CC_MUTUAL_TLS_PRIVATE_KEY
-      public_cert: CC_MUTUAL_TLS_PUBLIC_CERT
+      ca_cert: REPLACE_WITH_CC_MUTUAL_TLS_CA_CERT
+      private_key: REPLACE_WITH_CC_MUTUAL_TLS_PRIVATE_KEY
+      public_cert: REPLACE_WITH_CC_MUTUAL_TLS_PUBLIC_CERT
     newrelic:
       capture_params: false
       developer_mode: false
