@@ -27,7 +27,9 @@ jobs:
       zone: z1
   resource_pool: small_z1
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: metron_agent
     release: cf
@@ -50,7 +52,9 @@ jobs:
       zone: z2
   resource_pool: small_z2
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: metron_agent
     release: cf
@@ -70,7 +74,9 @@ jobs:
       zone: z1
   resource_pool: small_z1
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - consumes:
       nats: nil
@@ -93,7 +99,9 @@ jobs:
       zone: z2
   resource_pool: medium_z2
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - consumes:
       nats: nil
@@ -142,7 +150,9 @@ jobs:
       zone: z1
   resource_pool: small_z1
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: etcd
     release: cf
@@ -172,7 +182,9 @@ jobs:
       zone: z2
   resource_pool: large_z2
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: etcd
     release: cf
@@ -194,7 +206,9 @@ jobs:
       zone: z1
   resource_pool: small_z1
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: collector
     release: cf
@@ -227,7 +241,9 @@ jobs:
         - blobstore.REPLACE_WITH_SYSTEM_DOMAIN
   resource_pool: medium_z1
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: debian_nfs_server
     release: cf
@@ -235,12 +251,14 @@ jobs:
     release: cf
   - name: blobstore
     release: cf
-  - name: route_registrar
+  - consumes:
+      nats: nil
+    name: route_registrar
     release: cf
   update: {}
 - default_networks:
   - name: cf1
-  instances: 0
+  instances: 1
   name: blobstore_z1
   networks:
   - name: cf1
@@ -263,13 +281,17 @@ jobs:
         - blobstore.REPLACE_WITH_SYSTEM_DOMAIN
   resource_pool: medium_z1
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: metron_agent
     release: cf
   - name: blobstore
     release: cf
-  - name: route_registrar
+  - consumes:
+      nats: nil
+    name: route_registrar
     release: cf
   update: {}
 - default_networks:
@@ -286,7 +308,9 @@ jobs:
       zone: z1
   resource_pool: medium_z1
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: postgres
     release: cf
@@ -328,15 +352,19 @@ jobs:
         - 10.0.16.9
   resource_pool: medium_z1
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: uaa
     release: cf
   - name: metron_agent
     release: cf
-  - name: route_registrar
+  - consumes:
+      nats: nil
+    name: route_registrar
     release: cf
-  - name: statsd-injector
+  - name: statsd_injector
     release: cf
   update: {}
 - default_networks:
@@ -373,15 +401,19 @@ jobs:
         - 10.0.16.9
   resource_pool: medium_z2
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: uaa
     release: cf
   - name: metron_agent
     release: cf
-  - name: route_registrar
+  - consumes:
+      nats: nil
+    name: route_registrar
     release: cf
-  - name: statsd-injector
+  - name: statsd_injector
     release: cf
   update: {}
 - default_networks:
@@ -415,7 +447,9 @@ jobs:
         - api.REPLACE_WITH_SYSTEM_DOMAIN
   resource_pool: medium_z1
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: java-buildpack
     release: cf
@@ -437,13 +471,17 @@ jobs:
     release: cf
   - name: dotnet-core-buildpack
     release: cf
-  - name: cloud_controller_ng
+  - consumes:
+      nats: nil
+    name: cloud_controller_ng
     release: cf
   - name: metron_agent
     release: cf
-  - name: statsd-injector
+  - name: statsd_injector
     release: cf
-  - name: route_registrar
+  - consumes:
+      nats: nil
+    name: route_registrar
     release: cf
   update: {}
 - default_networks:
@@ -477,7 +515,9 @@ jobs:
         - api.REPLACE_WITH_SYSTEM_DOMAIN
   resource_pool: large_z2
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: java-buildpack
     release: cf
@@ -499,13 +539,17 @@ jobs:
     release: cf
   - name: dotnet-core-buildpack
     release: cf
-  - name: cloud_controller_ng
+  - consumes:
+      nats: nil
+    name: cloud_controller_ng
     release: cf
   - name: metron_agent
     release: cf
-  - name: statsd-injector
+  - name: statsd_injector
     release: cf
-  - name: route_registrar
+  - consumes:
+      nats: nil
+    name: route_registrar
     release: cf
   update: {}
 - default_networks:
@@ -520,9 +564,13 @@ jobs:
       zone: z1
   resource_pool: small_z1
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
-  - name: cloud_controller_clock
+  - consumes:
+      nats: nil
+    name: cloud_controller_clock
     release: cf
   - name: metron_agent
     release: cf
@@ -545,9 +593,13 @@ jobs:
       share: null
   resource_pool: small_z1
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
-  - name: cloud_controller_worker
+  - consumes:
+      nats: nil
+    name: cloud_controller_worker
     release: cf
   - name: metron_agent
     release: cf
@@ -570,9 +622,13 @@ jobs:
       share: null
   resource_pool: small_z2
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
-  - name: cloud_controller_worker
+  - consumes:
+      nats: nil
+    name: cloud_controller_worker
     release: cf
   - name: metron_agent
     release: cf
@@ -601,13 +657,17 @@ jobs:
         - hm9000.REPLACE_WITH_SYSTEM_DOMAIN
   resource_pool: medium_z1
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: hm9000
     release: cf
   - name: metron_agent
     release: cf
-  - name: route_registrar
+  - consumes:
+      nats: nil
+    name: route_registrar
     release: cf
   update: {}
 - default_networks:
@@ -634,13 +694,17 @@ jobs:
         - hm9000.REPLACE_WITH_SYSTEM_DOMAIN
   resource_pool: medium_z2
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: hm9000
     release: cf
   - name: metron_agent
     release: cf
-  - name: route_registrar
+  - consumes:
+      nats: nil
+    name: route_registrar
     release: cf
   update: {}
 - default_networks:
@@ -665,7 +729,9 @@ jobs:
       zone: z1
   resource_pool: runner_z1
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: dea_next
     release: cf
@@ -697,7 +763,9 @@ jobs:
       zone: z2
   resource_pool: runner_z2
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: dea_next
     release: cf
@@ -720,7 +788,9 @@ jobs:
       zone: z1
   resource_pool: medium_z1
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: doppler
     release: cf
@@ -742,7 +812,9 @@ jobs:
       zone: z2
   resource_pool: medium_z2
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: doppler
     release: cf
@@ -771,7 +843,9 @@ jobs:
       zone: z1
   resource_pool: small_z1
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: doppler
     release: cf
@@ -800,7 +874,9 @@ jobs:
       zone: z2
   resource_pool: medium_z2
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: doppler
     release: cf
@@ -836,13 +912,17 @@ jobs:
       zone: z1
   resource_pool: small_z1
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: loggregator_trafficcontroller
     release: cf
   - name: metron_agent
     release: cf
-  - name: route_registrar
+  - consumes:
+      nats: nil
+    name: route_registrar
     release: cf
   update:
     max_in_flight: 1
@@ -874,13 +954,17 @@ jobs:
       zone: z2
   resource_pool: small_z2
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: loggregator_trafficcontroller
     release: cf
   - name: metron_agent
     release: cf
-  - name: route_registrar
+  - consumes:
+      nats: nil
+    name: route_registrar
     release: cf
   update:
     max_in_flight: 1
@@ -902,9 +986,13 @@ jobs:
       zone: z1
   resource_pool: router_z1
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
-  - name: gorouter
+  - consumes:
+      nats: nil
+    name: gorouter
     release: cf
   - name: metron_agent
     release: cf
@@ -925,9 +1013,13 @@ jobs:
       zone: z2
   resource_pool: router_z2
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
-  - name: gorouter
+  - consumes:
+      nats: nil
+    name: gorouter
     release: cf
   - name: metron_agent
     release: cf
@@ -956,7 +1048,9 @@ jobs:
       - 10.0.16.9
   resource_pool: router_z1
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: haproxy
     release: cf
@@ -1058,9 +1152,15 @@ jobs:
     consul: {}
     metron_agent:
       zone: z1
+    tls:
+      ca_cert: null
+      cert: null
+      key: null
   resource_pool: database_z1
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: bbs
     release: diego
@@ -1080,9 +1180,15 @@ jobs:
     consul: {}
     metron_agent:
       zone: z2
+    tls:
+      ca_cert: null
+      cert: null
+      key: null
   resource_pool: database_z2
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: bbs
     release: diego
@@ -1102,9 +1208,15 @@ jobs:
     consul: {}
     metron_agent:
       zone: z3
+    tls:
+      ca_cert: null
+      cert: null
+      key: null
   resource_pool: database_z3
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: bbs
     release: diego
@@ -1124,7 +1236,9 @@ jobs:
       zone: z1
   resource_pool: brain_z1
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: auctioneer
     release: diego
@@ -1144,11 +1258,21 @@ jobs:
       rep:
         use_azure_fault_domains: null
         zone: z1
+      route_emitter:
+        local_mode: false
+    loggregator:
+      ca_cert: REPLACE_WITH_LOGGREGATOR_CA_CERT
+      cert: null
+      key: null
+      use_v2_api: null
+      v2_api_port: null
     metron_agent:
       zone: z1
   resource_pool: cell_z1
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: rep
     release: diego
@@ -1172,7 +1296,9 @@ jobs:
       zone: z1
   resource_pool: cc_bridge_z1
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: stager
     release: cf
@@ -1196,7 +1322,9 @@ jobs:
       zone: z1
   resource_pool: route_emitter_z1
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: route_emitter
     release: diego
@@ -1216,7 +1344,9 @@ jobs:
       zone: z1
   resource_pool: access_z1
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: ssh_proxy
     release: diego
@@ -1238,7 +1368,9 @@ jobs:
       zone: z2
   resource_pool: brain_z2
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: auctioneer
     release: diego
@@ -1258,11 +1390,21 @@ jobs:
       rep:
         use_azure_fault_domains: null
         zone: z2
+      route_emitter:
+        local_mode: false
+    loggregator:
+      ca_cert: REPLACE_WITH_LOGGREGATOR_CA_CERT
+      cert: null
+      key: null
+      use_v2_api: null
+      v2_api_port: null
     metron_agent:
       zone: z2
   resource_pool: cell_z2
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: rep
     release: diego
@@ -1286,7 +1428,9 @@ jobs:
       zone: z2
   resource_pool: cc_bridge_z2
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: stager
     release: cf
@@ -1310,7 +1454,9 @@ jobs:
       zone: z2
   resource_pool: route_emitter_z2
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: route_emitter
     release: diego
@@ -1330,7 +1476,9 @@ jobs:
       zone: z2
   resource_pool: access_z2
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: ssh_proxy
     release: diego
@@ -1352,7 +1500,9 @@ jobs:
       zone: z3
   resource_pool: brain_z3
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: auctioneer
     release: diego
@@ -1372,11 +1522,21 @@ jobs:
       rep:
         use_azure_fault_domains: null
         zone: z3
+      route_emitter:
+        local_mode: false
+    loggregator:
+      ca_cert: REPLACE_WITH_LOGGREGATOR_CA_CERT
+      cert: null
+      key: null
+      use_v2_api: null
+      v2_api_port: null
     metron_agent:
       zone: z3
   resource_pool: cell_z3
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: rep
     release: diego
@@ -1400,7 +1560,9 @@ jobs:
       zone: z3
   resource_pool: cc_bridge_z3
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: stager
     release: cf
@@ -1424,7 +1586,9 @@ jobs:
       zone: z3
   resource_pool: route_emitter_z3
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: route_emitter
     release: diego
@@ -1444,7 +1608,9 @@ jobs:
       zone: z3
   resource_pool: access_z3
   templates:
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: ssh_proxy
     release: diego
@@ -1493,7 +1659,9 @@ jobs:
     release: cf
   - name: tps
     release: cf
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: bbs
     release: diego
@@ -1540,7 +1708,9 @@ jobs:
     release: cf
   - name: tps
     release: cf
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: bbs
     release: diego
@@ -1587,7 +1757,9 @@ jobs:
     release: cf
   - name: tps
     release: cf
-  - name: consul_agent
+  - consumes:
+      consul: nil
+    name: consul_agent
     release: cf
   - name: bbs
     release: diego
@@ -1729,7 +1901,11 @@ properties:
       cc:
         basic_auth_password: REPLACE_WITH_BULK_API_PASSWORD
         basic_auth_username: internal_user
+        ca_cert: REPLACE_WITH_DIEGO_CA
+        client_cert: REPLACE_WITH_TPS_CLIENT_CERT
+        client_key: REPLACE_WITH_TPS_CLIENT_KEY
       dropsonde_port: null
+      listener_enabled: null
       log_level: debug
   cc:
     allow_app_ssh_access: true
@@ -1795,9 +1971,13 @@ properties:
       bbs:
         url: null
       insecure_docker_registry_list: null
+      pid_limit: null
+      temporary_cc_uploader_mtls: null
       temporary_local_apps: null
       temporary_local_staging: null
+      temporary_local_sync: null
       temporary_local_tasks: null
+      temporary_local_tps: null
       use_privileged_containers_for_staging: null
     directories: null
     disable_custom_buildpacks: false
@@ -1860,9 +2040,9 @@ properties:
     min_recommended_cli_version: null
     minimum_candidate_stagers: null
     mutual_tls:
-      ca_cert: null
-      private_key: null
-      public_cert: null
+      ca_cert: REPLACE_WITH_CC_MUTUAL_TLS_CA_CERT
+      private_key: REPLACE_WITH_CC_MUTUAL_TLS_PRIVATE_KEY
+      public_cert: REPLACE_WITH_CC_MUTUAL_TLS_PUBLIC_CERT
     newrelic:
       capture_params: false
       developer_mode: false
@@ -1968,9 +2148,9 @@ properties:
     - name: ccadmin
       password: REPLACE_WITH_CCDB_PASSWORD
       tag: admin
+  cf_networking: null
   cflinuxfs2-rootfs:
     trusted_certs: null
-  cni-flannel: null
   collector: null
   consul:
     agent:
@@ -2057,6 +2237,8 @@ properties:
       ca_cert: REPLACE_WITH_DIEGO_CA
       cell_state_timeout: null
       dropsonde_port: null
+      locket:
+        api_location: null
       log_level: debug
       rep:
         ca_cert: REPLACE_WITH_DIEGO_CA
@@ -2066,6 +2248,7 @@ properties:
         require_tls: null
       server_cert: REPLACE_WITH_AUCTIONEER_SERVER_CERT
       server_key: REPLACE_WITH_AUCTIONEER_SERVER_KEY
+      skip_consul_lock: null
       starting_container_weight: null
     bbs:
       active_key_label: bbs_key_a
@@ -2095,6 +2278,8 @@ properties:
         machines: []
         max_idle_conns_per_host: null
         require_ssl: true
+      locket:
+        api_location: null
       log_level: debug
       rep:
         ca_cert: REPLACE_WITH_DIEGO_CA
@@ -2105,6 +2290,7 @@ properties:
       require_ssl: true
       server_cert: REPLACE_WITH_BBS_SERVER_CERT
       server_key: REPLACE_WITH_BBS_SERVER_KEY
+      skip_consul_lock: null
       sql:
         ca_cert: null
         db_connection_string: null
@@ -2114,6 +2300,7 @@ properties:
         db_port: 5524
         db_schema: diego
         db_username: diego
+        max_idle_connections: null
         max_open_connections: null
         require_ssl: null
     cfdot:
@@ -2123,6 +2310,7 @@ properties:
         client_key: REPLACE_WITH_BBS_CLIENT_KEY
         use_ssl: true
     executor:
+      auto_disk_capacity_overhead_mb: null
       ca_certs_for_downloads: null
       container_metrics_report_interval: null
       disk_capacity_mb: null
@@ -2140,6 +2328,8 @@ properties:
           path: null
           user: null
         timeout: null
+      instance_identity_ca_cert: null
+      instance_identity_key: null
       log_level: debug
       max_cache_size_in_bytes: null
       memory_capacity_mb: null
@@ -2148,6 +2338,14 @@ properties:
     file_server:
       dropsonde_port: null
       log_level: debug
+    locket:
+      sql:
+        db_driver: postgres
+        db_host: 10.0.16.8
+        db_password: REPLACE_WITH_DIEGODB_PASSWORD
+        db_port: 5524
+        db_schema: diego
+        db_username: diego
     rep:
       bbs:
         api_location: null
@@ -2162,6 +2360,8 @@ properties:
       enable_legacy_api_endpoints: null
       evacuation_timeout_in_seconds: null
       listen_addr_admin: null
+      locket:
+        api_location: null
       log_level: debug
       preloaded_rootfses:
       - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs
@@ -2200,8 +2400,11 @@ properties:
       enable_cf_auth: true
       enable_diego_auth: false
       host_key: REPLACE_WITH_SSH_PROXY_HOST_KEY
+      uaa:
+        ca_cert: REPLACE_WITH_UAA_CA_CERT
+        port: 8443
+        url: null
       uaa_secret: REPLACE_WITH_SSH_PROXY_SECRET
-      uaa_token_url: https://uaa.REPLACE_WITH_SYSTEM_DOMAIN/oauth/token
     ssl:
       skip_cert_verify: true
   disk_quota_enabled: true
@@ -2237,6 +2440,7 @@ properties:
   garden:
     allow_host_access: null
     allow_networks: null
+    apparmor_profile: null
     default_container_grace_time: 0
     deny_networks:
     - 0.0.0.0/0
@@ -2244,6 +2448,8 @@ properties:
     disk_quota_enabled: null
     dns_servers: null
     graph_cleanup_threshold_in_mb: 0
+    image_plugin: null
+    image_plugin_extra_args: null
     insecure_docker_registry_list: null
     listen_address: null
     listen_network: null
@@ -2255,7 +2461,9 @@ properties:
     network_pool: null
     persistent_image_list:
     - /var/vcap/packages/cflinuxfs2/rootfs
-  garden-cni: null
+    privileged_image_plugin: null
+    privileged_image_plugin_extra_args: null
+  grootfs: null
   ha_proxy: null
   hm9000:
     ca_cert: REPLACE_WITH_HM9000_CA_CERT
@@ -2293,6 +2501,12 @@ properties:
       metron:
         cert: REPLACE_WITH_METRON_CERT
         key: REPLACE_WITH_METRON_KEY
+      statsd_injector:
+        cert: REPLACE_WITH_LOGGREGATOR_STATSDINJECTOR_CERT
+        key: REPLACE_WITH_LOGGREGATOR_STATSDINJECTOR_KEY
+      syslogdrainbinder:
+        cert: REPLACE_WITH_LOGGREGATOR_SYSLOGDRAINBINDER_CERT
+        key: REPLACE_WITH_LOGGREGATOR_SYSLOGDRAINBINDER_KEY
       trafficcontroller:
         cert: REPLACE_WITH_TRAFFICCONTROLLER_CERT
         key: REPLACE_WITH_TRAFFICCONTROLLER_KEY
@@ -2317,9 +2531,9 @@ properties:
     protocol: null
     restricted_ips_regex: null
     saml:
+      serviceProviderCertificate: REPLACE_WITH_SAML_CERT
       serviceProviderKey: REPLACE_WITH_SAML_KEY
       serviceProviderKeyPassword: ''
-      serviceProviderCertificate: REPLACE_WITH_SAML_CERT
     self_service_links_enabled: null
     smtp:
       host: null
@@ -2350,15 +2564,12 @@ properties:
     prof_port: 0
     trace: false
     user: nats
-  netman:
-    disable: null
   nfs_server:
     address: null
     allow_from_entries:
     - 10.0.16.0/24
     - 10.0.16.0/24
     share: null
-  policy-server: null
   request_timeout_in_seconds: 900
   router:
     balancing_algorithm: null
@@ -2374,6 +2585,7 @@ properties:
     load_balancer_healthy_threshold: null
     logging_level: null
     logrotate: null
+    max_idle_connections: null
     port: null
     requested_route_registration_interval_in_seconds: null
     route_services_recommend_https: null
@@ -2393,9 +2605,13 @@ properties:
       enable_zipkin: null
   routing_api:
     enabled: null
+    port: null
+    uri: null
   smoke_tests: null
   ssl:
     skip_cert_verify: true
+  statsd_injector:
+    deployment: multiple-vm-azure
   support_address: http://support.cloudfoundry.com
   syslog_daemon_config: null
   syslog_drain_binder:
@@ -2420,7 +2636,7 @@ properties:
         countFailuresWithinSeconds: null
         lockoutAfterFailures: null
         lockoutPeriodSeconds: null
-    ca_cert: null
+    ca_cert: REPLACE_WITH_UAA_CA_CERT
     catalina_opts: null
     cc:
       client_secret: REPLACE_WITH_CC_CLIENT_SECRET
@@ -2440,13 +2656,14 @@ properties:
         authorized-grant-types: password,refresh_token
         override: true
         refresh-token-validity: 604800
-        scope: cloud_controller.read,cloud_controller.write,openid,password.write,cloud_controller.admin,cloud_controller.admin_read_only,scim.read,scim.write,doppler.firehose,uaa.user,routing.router_groups.read,routing.router_groups.write
+        scope: cloud_controller.read,cloud_controller.write,openid,password.write,cloud_controller.admin,cloud_controller.admin_read_only,cloud_controller.global_auditor,scim.read,scim.write,doppler.firehose,uaa.user,routing.router_groups.read,routing.router_groups.write
       cloud_controller_username_lookup:
         authorities: scim.userids
         authorized-grant-types: client_credentials
         secret: REPLACE_WITH_CLOUD_CONTROLLER_USERNAME_LOOKUP_SECRET
       doppler:
         authorities: uaa.resource
+        authorized-grant-types: client_credentials
         override: true
         secret: REPLACE_WITH_DOPPLER_SECRET
       gorouter:
@@ -2473,11 +2690,11 @@ properties:
         scope: openid,cloud_controller.read,cloud_controller.write,cloud_controller.admin
         secret: REPLACE_WITH_SSH_PROXY_SECRET
       tcp_emitter:
-        authorities: routing.routes.write,routing.routes.read,routing.router_groups.read
+        authorities: routing.routes.write,routing.routes.read
         authorized-grant-types: client_credentials,refresh_token
         secret: REPLACE_WITH_TCP_EMITTER_SECRET
       tcp_router:
-        authorities: routing.routes.read,routing.router_groups.read
+        authorities: routing.routes.read
         authorized-grant-types: client_credentials,refresh_token
         secret: REPLACE_WITH_TCP_ROUTER_SECRET
     database: null
@@ -2515,6 +2732,7 @@ properties:
       port: 8443
     sslCertificate: REPLACE_WITH_UAA_SERVER_CERT
     sslPrivateKey: REPLACE_WITH_UAA_SERVER_KEY
+    token_endpoint: null
     url: https://uaa.REPLACE_WITH_SYSTEM_DOMAIN
     user:
       authorities:
@@ -2549,7 +2767,6 @@ properties:
     - name: uaaadmin
       password: REPLACE_WITH_UAADB_PASSWORD
       tag: admin
-  vxlan-policy-agent: null
 releases:
 - name: diego
   version: latest
