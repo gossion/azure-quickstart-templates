@@ -8,8 +8,8 @@
 
 set -e
 
-CF_RELEASE_VERSION="v250"
-DIEGO_RELEASE_VERSION="v1.4.1"
+CF_RELEASE_VERSION="v254"
+DIEGO_RELEASE_VERSION="v1.10.1"
 
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 WORK_DIR=$(mktemp -d /tmp/upgrade-manifest.XXXXX)

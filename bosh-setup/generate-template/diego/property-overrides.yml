@@ -54,6 +54,10 @@ property_overrides:
     log_level: debug
   tps:
     log_level: debug
+    cc:
+      ca_cert: REPLACE_WITH_DIEGO_CA
+      client_cert: REPLACE_WITH_TPS_CLIENT_CERT
+      client_key: REPLACE_WITH_TPS_CLIENT_KEY
   rep:
     ca_cert: REPLACE_WITH_DIEGO_CA
     client_cert: REPLACE_WITH_REP_CLIENT_CERT
