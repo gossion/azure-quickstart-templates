@@ -60,6 +60,7 @@ $(cert_variable jwt_verification_key certs/uaa-jwt-certs/jwt_verification_key)
 $(cert_variable jwt_signing_key      certs/uaa-jwt-certs/jwt_signing_key)
 $(cert_variable uaa_server_cert      certs/uaa-certs/uaa-server.crt)
 $(cert_variable uaa_server_key       certs/uaa-certs/uaa-server.key)
+$(cert_variable uaa_ca_cert          certs/uaa-certs/server-ca.key)
 
 $(cert_variable hm9000_ca_cert     certs/hm9000-certs/server-ca.crt)
 $(cert_variable hm9000_client_cert certs/hm9000-certs/hm9000-agent.crt)
@@ -84,6 +85,10 @@ $(cert_variable trafficcontroller_cert  certs/loggregator-certs/trafficcontrolle
 $(cert_variable trafficcontroller_key   certs/loggregator-certs/trafficcontroller-server.key)
 $(cert_variable metron_cert             certs/loggregator-certs/metron-server.crt)
 $(cert_variable metron_key              certs/loggregator-certs/metron-server.key)
+$(cert_variable syslogdrainbinder_cert             certs/loggregator-certs/syslogdrainbinder-server.crt)
+$(cert_variable syslogdrainbinder_key              certs/loggregator-certs/syslogdrainbinder-server.key)
+$(cert_variable statsdinjector_cert             certs/loggregator-certs/statsd_injector-server.crt)
+$(cert_variable statsdinjector_key              certs/loggregator-certs/statsd_injector-server.key)
 
 $(cert_variable ha_proxy_ssl_pem certs/haproxy-certs/ha-proxy-ssl-pem)
 
@@ -103,6 +108,13 @@ $(cert_variable auctioneer_client_cert certs/diego-certs/auctioneer-agent.crt)
 $(cert_variable auctioneer_client_key  certs/diego-certs/auctioneer-agent.key)
 $(cert_variable auctioneer_server_cert certs/diego-certs/auctioneer-server.crt)
 $(cert_variable auctioneer_server_key  certs/diego-certs/auctioneer-server.key)
+
+$(cert_variable cc_mutual_tls_ca_cert certs/diego-certs/server-ca.crt)
+$(cert_variable cc_mutual_tls_public_cert certs/diego-certs/cc-server.crt)
+$(cert_variable cc_mutual_tls_public_key  certs/diego-certs/cc-server.key)
+
+$(cert_variable tps_client_cert certs/diego-certs/tps-server.crt)
+$(cert_variable tps_client_key  certs/diego-certs/tps-server.key)
 
 $(cert_variable ssh_proxy_host_key       certs/ssh-proxy-certs/ssh-proxy-host-key.pem)
 $(variable      host_key_fingerprint certs/ssh-proxy-certs/ssh-proxy-host-key-fingerprint)
@@ -228,9 +240,13 @@ pushd certs
   certstrap_generate_certs --depot_path "loggregator-certs" --ca_cn "loggregatorCA" --component_name "doppler" --server_cn "doppler"
   certstrap_generate_certs --depot_path "loggregator-certs" --ca_cn "loggregatorCA" --component_name "trafficcontroller" --server_cn "trafficcontroller"
   certstrap_generate_certs --depot_path "loggregator-certs" --ca_cn "loggregatorCA" --component_name "metron" --server_cn "metron"
+  certstrap_generate_certs --depot_path "loggregator-certs" --ca_cn "loggregatorCA" --component_name "syslogdrainbinder" --server_cn "syslogdrainbinder"
+  certstrap_generate_certs --depot_path "loggregator-certs" --ca_cn "loggregatorCA" --component_name "statsd_injector" --server_cn "statsd_injector"
   certstrap_generate_certs --depot_path "diego-certs" --ca_cn "diegoCA" --component_name "bbs" --server_cn "bbs.service.cf.internal" --domain '*.bbs.service.cf.internal,bbs.service.cf.internal' --agent_cn "bbs client"
   certstrap_generate_certs --depot_path "diego-certs" --ca_cn "diegoCA" --component_name "rep" --server_cn "cell.service.cf.internal" --domain '*.cell.service.cf.internal,cell.service.cf.internal' --agent_cn "rep client"
   certstrap_generate_certs --depot_path "diego-certs" --ca_cn "diegoCA" --component_name "auctioneer" --server_cn "auctioneer.service.cf.internal" --domain 'auctioneer.service.cf.internal' --agent_cn "auctioneer client"
+  certstrap_generate_certs --depot_path "diego-certs" --ca_cn "diegoCA" --component_name "cc" --server_cn "cloud-controller-ng.service.cf.internal"
+  certstrap_generate_certs --depot_path "diego-certs" --ca_cn "diegoCA" --component_name "tps" --server_cn "tps_watcher"
   certstrap_generate_certs --depot_path "uaa-certs" --ca_cn "cert-authority" --component_name "uaa" --server_cn "uaa.service.cf.internal"
   certstrap_generate_certs --depot_path "saml-certs" --ca_cn "uaa_login_saml" --component_name "saml"
 
@@ -278,6 +294,7 @@ replace_certs_list="REPLACE_WITH_CONSUL_CA_CERT \
                     REPLACE_WITH_HM9000_CA_CERT \
                     REPLACE_WITH_HA_PROXY_SSL_PEM \
                     REPLACE_WITH_HOST_KEY_FINGERPRINT \
+                    REPLACE_WITH_UAA_CA_CERT \
                     REPLACE_WITH_UAA_SERVER_CERT \
                     REPLACE_WITH_UAA_SERVER_KEY \
                     REPLACE_WITH_ETCD_CA_CERT \
@@ -295,6 +312,14 @@ replace_certs_list="REPLACE_WITH_CONSUL_CA_CERT \
                     REPLACE_WITH_TRAFFICCONTROLLER_KEY \
                     REPLACE_WITH_METRON_CERT \
                     REPLACE_WITH_METRON_KEY \
+                    REPLACE_WITH_SYSLOGDRAINBINDER_CERT \
+                    REPLACE_WITH_SYSLOGDRAINBINDER_KEY \
+                    REPLACE_WITH_STATSDINJECTOR_CERT \
+                    REPLACE_WITH_STATSDINJECTOR_KEY \
+
+                    REPLACE_WITH_CC_MUTUAL_TLS_CA_CERT \
+                    REPLACE_WITH_CC_MUTUAL_TLS_PUBLIC_CERT \
+                    REPLACE_WITH_CC_MUTUAL_TLS_PRIVATE_KEY \
 
                     REPLACE_WITH_DIEGO_CA \
                     REPLACE_WITH_BBS_CLIENT_CERT \
@@ -309,6 +334,9 @@ replace_certs_list="REPLACE_WITH_CONSUL_CA_CERT \
                     REPLACE_WITH_AUCTIONEER_CLIENT_KEY \
                     REPLACE_WITH_AUCTIONEER_SERVER_CERT \
                     REPLACE_WITH_AUCTIONEER_SERVER_KEY \
+                    REPLACE_WITH_TPS_CLIENT_CERT \
+                    REPLACE_WITH_TPS_CLIENT_KEY \
+
                     REPLACE_WITH_SSH_PROXY_HOST_KEY \
                     REPLACE_WITH_SAML_KEY \
                     REPLACE_WITH_SAML_CERT"
