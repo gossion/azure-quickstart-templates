@@ -111,7 +111,7 @@ $(cert_variable auctioneer_server_key  certs/diego-certs/auctioneer-server.key)
 
 $(cert_variable cc_mutual_tls_ca_cert certs/diego-certs/server-ca.crt)
 $(cert_variable cc_mutual_tls_public_cert certs/diego-certs/cc-server.crt)
-$(cert_variable cc_mutual_tls_public_key  certs/diego-certs/cc-server.key)
+$(cert_variable cc_mutual_tls_private_key  certs/diego-certs/cc-server.key)
 
 $(cert_variable tps_client_cert certs/diego-certs/tps-server.crt)
 $(cert_variable tps_client_key  certs/diego-certs/tps-server.key)
