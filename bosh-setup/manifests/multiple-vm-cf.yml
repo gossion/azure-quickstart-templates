@@ -258,7 +258,7 @@ jobs:
   update: {}
 - default_networks:
   - name: cf1
-  instances: 1
+  instances: 0
   name: blobstore_z1
   networks:
   - name: cf1
