@@ -88,4 +88,4 @@ vm_extensions:
 - name: stop-at-10pm
   cloud_properties:
     tags:
-    - stopat10pm: 2
+      stopat10pm: 2

@@ -19,7 +19,7 @@
   value:
     instance_type: Standard_D1_v2
     tags:
-    - stopat10pm: 1
+      stopat10pm: 1
 
 - type: replace
   path: /networks/name=default/subnets/0/cloud_properties?
