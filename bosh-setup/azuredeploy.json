@@ -282,6 +282,9 @@
       "[uri(variables('baseUriAzureCloud'), 'manifests/use-compiled-releases.yml')]",
       "[uri(variables('baseUriAzureCloud'), 'manifests/use-xenial-stemcell.yml')]",
       "[uri(variables('baseUriAzureCloud'), 'manifests/use-compiled-releases-xenial-stemcell.yml')]",
+      "[uri(variables('baseUriAzureCloud'), 'manifests/experimental/cloud-config-assign-additional-tags-experimental.yml')]",
+      "[uri(variables('baseUriAzureCloud'), 'manifests/experimental/cpi-assign-additional-tags-experimental.yml')]",
+      "[uri(variables('baseUriAzureCloud'), 'manifests/experimental/ops-assign-additional-tags-experimental.yml')]",
       "https://s3-us-west-1.amazonaws.com/cf-cli-releases/releases/v6.34.1/cf-cli-installer_6.34.1_x86-64.deb"
     ],
     "filesToDownloadMisc": [
@@ -323,6 +326,9 @@
       "[uri(variables('baseUriAzureChinaCloudWithVersion'), 'manifests/use-azure-storage-blobstore.yml')]",
       "[uri(variables('baseUriAzureChinaCloudWithVersion'), 'manifests/use-mirror-releases-for-cf.yml')]",
       "[uri(variables('baseUriAzureChinaCloudWithVersion'), 'manifests/use-mirror-compiled-releases.yml')]",
+      "[uri(variables('baseUriAzureChinaCloudWithVersion'), 'manifests/experimental/cloud-config-assign-additional-tags-experimental.yml')]",
+      "[uri(variables('baseUriAzureChinaCloudWithVersion'), 'manifests/experimental/cpi-assign-additional-tags-experimental.yml')]",
+      "[uri(variables('baseUriAzureChinaCloudWithVersion'), 'manifests/experimental/ops-assign-additional-tags-experimental.yml')]",
       "[uri(variables('baseUriAzureChinaCloud'), 'cf-cli/cf-cli-installer_6.34.1_x86-64.deb')]"
     ],
     "filesToDownload": "[variables(concat('filesToDownload', parameters('environment')))]",

@@ -36,6 +36,14 @@ for directory in $directories; do
   done
 done
 
+# Experimental
+directorie="manifests/experimental"
+for file in $directory/*; do
+  if [[ -f $file ]]; then
+    az storage blob upload -f $file -c ${container_name} -n ${template_version}/experimental/$file
+  fi
+done
+
 bosh_cli_version="2.0.48"
 bosh_cli_name="bosh-cli-${bosh_cli_version}-linux-amd64"
 wget https://s3.amazonaws.com/bosh-cli-artifacts/${bosh_cli_name} -O /tmp/${bosh_cli_name}

@@ -310,6 +310,16 @@ export BOSH_CLIENT_SECRET="\$(bosh int ~/bosh-deployment-vars.yml --path /admin_
 export BOSH_CA_CERT="\$(bosh int ~/bosh-deployment-vars.yml --path /director_ssl/ca)"
 EOF
 
+# experimental: add a tag to VMs created by CPI
+mkdir -p "$home_dir/experimental"
+cp "$home_dir/deploy_bosh.sh" "$home_dir/deploy_cloud_foundry.sh" "$home_dir/experimental"
+sed -i 's/cpi.yml/cpi-assign-additional-tags-experimental.yml/' "$home_dir/experimental/deploy_bosh.sh"
+sed -i 's/cloud-config.yml/cloud-config-assign-additional-tags-experimental.yml/' "$home_dir/experimental/deploy_cloud_foundry.sh"
+sed -i '$s/$/ \\\n  -o ~\/example_manifests\/ops-assign-additional-tags-experimental.yml/' "$home_dir/experimental/deploy_cloud_foundry.sh"
+echo >> "$home_dir/experimental/deploy_cloud_foundry.sh"
+echo 'bosh update-resurrection off' >> "$home_dir/experimental/deploy_cloud_foundry.sh"
+chown -R $username "$home_dir/experimental"
+
 auto_deploy_cf=$(get_setting AUTO_DEPLOY_CLOUD_FOUNDRY)
 if [ "$auto_deploy_cf" != "enabled" ]; then
   echo "The Cloud Foundry won't be deployed automatically. Finish."
