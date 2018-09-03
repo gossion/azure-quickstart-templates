@@ -121,6 +121,7 @@ bosh create-env ~/example_manifests/bosh.yml \\
   -o ~/example_manifests/cpi.yml \\
   -o ~/example_manifests/custom-cpi-release.yml \\
   -o ~/example_manifests/custom-environment.yml \\
+  -o ~/example_manifests/custom-director-vm-instance-type.yml \\
   -o ~/example_manifests/use-azure-dns.yml \\
   -o ~/example_manifests/jumpbox-user.yml \\
   -o ~/example_manifests/keep-failed-or-unreachable-vms.yml \\
@@ -290,6 +291,16 @@ chmod 777 $home_dir/login_cloud_foundry.sh
 
 chown -R $username $home_dir
 
+# experimental: add a tag to VMs created by CPI
+mkdir -p "$home_dir/experimental"
+cp "$home_dir/deploy_bosh.sh" "$home_dir/deploy_cloud_foundry.sh" "$home_dir/experimental"
+sed -i 's/custom-director-vm-instance-type.yml/custom-director-vm-instance-type-assign-additional-tags-experimental.yml/' "$home_dir/experimental/deploy_bosh.sh"
+sed -i 's/cloud-config.yml/cloud-config-assign-additional-tags-experimental.yml/' "$home_dir/experimental/deploy_cloud_foundry.sh"
+sed -i '$s/$/ \\\n  -o ~\/example_manifests\/ops-assign-additional-tags-experimental.yml/' "$home_dir/experimental/deploy_cloud_foundry.sh"
+echo >> "$home_dir/experimental/deploy_cloud_foundry.sh"
+echo 'bosh update-resurrection off' >> "$home_dir/experimental/deploy_cloud_foundry.sh"
+chown -R $username "$home_dir/experimental"
+
 echo "The devbox is prepared successfully."
 
 auto_deploy_bosh=$(get_setting AUTO_DEPLOY_BOSH)
@@ -309,16 +320,6 @@ export BOSH_CLIENT=admin
 export BOSH_CLIENT_SECRET="\$(bosh int ~/bosh-deployment-vars.yml --path /admin_password)"
 export BOSH_CA_CERT="\$(bosh int ~/bosh-deployment-vars.yml --path /director_ssl/ca)"
 EOF
-
-# experimental: add a tag to VMs created by CPI
-mkdir -p "$home_dir/experimental"
-cp "$home_dir/deploy_bosh.sh" "$home_dir/deploy_cloud_foundry.sh" "$home_dir/experimental"
-sed -i 's/cpi.yml/cpi-assign-additional-tags-experimental.yml/' "$home_dir/experimental/deploy_bosh.sh"
-sed -i 's/cloud-config.yml/cloud-config-assign-additional-tags-experimental.yml/' "$home_dir/experimental/deploy_cloud_foundry.sh"
-sed -i '$s/$/ \\\n  -o ~\/example_manifests\/ops-assign-additional-tags-experimental.yml/' "$home_dir/experimental/deploy_cloud_foundry.sh"
-echo >> "$home_dir/experimental/deploy_cloud_foundry.sh"
-echo 'bosh update-resurrection off' >> "$home_dir/experimental/deploy_cloud_foundry.sh"
-chown -R $username "$home_dir/experimental"
 
 auto_deploy_cf=$(get_setting AUTO_DEPLOY_CLOUD_FOUNDRY)
 if [ "$auto_deploy_cf" != "enabled" ]; then

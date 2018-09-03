@@ -269,6 +269,7 @@
       "[uri(variables('baseUriAzureCloud'), 'manifests/uaa.yml')]",
       "[uri(variables('baseUriAzureCloud'), 'manifests/credhub.yml')]",
       "[uri(variables('baseUriAzureCloud'), 'manifests/custom-cpi-release.yml')]",
+      "[uri(variables('baseUriAzureCloud'), 'manifests/custom-director-vm-instance-type.yml')]",
       "[uri(variables('baseUriAzureCloud'), 'manifests/custom-environment.yml')]",
       "[uri(variables('baseUriAzureCloud'), 'manifests/use-service-principal-with-certificate.yml')]",
       "[uri(variables('baseUriAzureCloud'), 'manifests/use-azure-dns.yml')]",
@@ -283,7 +284,7 @@
       "[uri(variables('baseUriAzureCloud'), 'manifests/use-xenial-stemcell.yml')]",
       "[uri(variables('baseUriAzureCloud'), 'manifests/use-compiled-releases-xenial-stemcell.yml')]",
       "[uri(variables('baseUriAzureCloud'), 'manifests/experimental/cloud-config-assign-additional-tags-experimental.yml')]",
-      "[uri(variables('baseUriAzureCloud'), 'manifests/experimental/cpi-assign-additional-tags-experimental.yml')]",
+      "[uri(variables('baseUriAzureCloud'), 'manifests/experimental/custom-director-vm-instance-type-assign-additional-tags-experimental.yml')]",
       "[uri(variables('baseUriAzureCloud'), 'manifests/experimental/ops-assign-additional-tags-experimental.yml')]",
       "https://s3-us-west-1.amazonaws.com/cf-cli-releases/releases/v6.34.1/cf-cli-installer_6.34.1_x86-64.deb"
     ],

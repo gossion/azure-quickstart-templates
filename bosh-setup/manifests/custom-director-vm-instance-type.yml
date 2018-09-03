@@ -1,0 +1,5 @@
+---
+- type: replace
+  path: /resource_pools/name=vms/cloud_properties?
+  value:
+    instance_type: ((director_vm_instance_type))
